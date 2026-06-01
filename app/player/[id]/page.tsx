@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "../../lib/supabase";
 import { getPlayerSession } from "../../lib/player-auth";
+import { getTftRankByPuuid } from "../../lib/actions";
 import Sidebar from "../../components/Sidebar";
 import TrophyCase from "../../components/TrophyCase";
 import DiamondDisplay from "../../components/DiamondDisplay";
@@ -13,7 +14,20 @@ import {
   Swords,
   Crown,
   History,
+  Shield,
 } from "lucide-react";
+
+const RANK_COLORS: Record<string, { bg: string; text: string; border: string }> = {
+  CHALLENGER: { bg: "bg-amber-500/10", text: "text-amber-400", border: "border-amber-500/30" },
+  GRANDMASTER: { bg: "bg-rose-500/10", text: "text-rose-400", border: "border-rose-500/30" },
+  MASTER: { bg: "bg-purple-500/10", text: "text-purple-400", border: "border-purple-500/30" },
+  DIAMOND: { bg: "bg-cyan-500/10", text: "text-cyan-400", border: "border-cyan-500/30" },
+  PLATINUM: { bg: "bg-teal-500/10", text: "text-teal-400", border: "border-teal-500/30" },
+  GOLD: { bg: "bg-yellow-500/10", text: "text-yellow-400", border: "border-yellow-500/30" },
+  SILVER: { bg: "bg-zinc-400/10", text: "text-zinc-300", border: "border-zinc-400/30" },
+  BRONZE: { bg: "bg-orange-700/10", text: "text-orange-600", border: "border-orange-700/30" },
+  IRON: { bg: "bg-zinc-600/10", text: "text-zinc-500", border: "border-zinc-600/30" },
+};
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -54,6 +68,9 @@ export default async function PlayerProfilePage({ params }: PageProps) {
     .eq("player_id", player.id)
     .order("awarded_at", { ascending: false });
 
+  // Fetch TFT Rank from Riot API
+  const tftRank = player.puuid ? await getTftRankByPuuid(player.puuid) : null;
+
   let totalGames = 0;
   let totalWins = 0;
   let totalTop4 = 0;
@@ -82,10 +99,22 @@ export default async function PlayerProfilePage({ params }: PageProps) {
 
           <div className="relative z-10 flex flex-col md:flex-row gap-8 items-center justify-between">
             <div className="flex flex-col items-center md:items-start gap-3">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <span className="text-[10px] px-2 py-0.5 rounded bg-white/[0.04] text-zinc-500 font-mono font-bold uppercase border border-white/[0.06]">
                   TFT Tuyển Thủ
                 </span>
+                {tftRank && tftRank.tier !== "UNRANKED" && (
+                  <span
+                    className={`text-[10px] px-2 py-0.5 rounded font-mono font-bold uppercase border flex items-center gap-1 ${
+                      RANK_COLORS[tftRank.tier]?.bg || "bg-zinc-500/10"
+                    } ${RANK_COLORS[tftRank.tier]?.text || "text-zinc-400"} ${
+                      RANK_COLORS[tftRank.tier]?.border || "border-zinc-500/20"
+                    }`}
+                  >
+                    <Shield className="w-3 h-3" />
+                    {tftRank.tier} {tftRank.rank} • {tftRank.lp} LP
+                  </span>
+                )}
                 <span className="text-[10px] px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-400 font-mono font-bold uppercase border border-cyan-500/20">
                   Đã Xác Minh
                 </span>
@@ -121,11 +150,14 @@ export default async function PlayerProfilePage({ params }: PageProps) {
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full md:w-auto">
               {[
+                ...(tftRank && tftRank.tier !== "UNRANKED"
+                  ? [{ label: "Rank", value: `${tftRank.tier} ${tftRank.rank}`, color: RANK_COLORS[tftRank.tier]?.text || "text-zinc-400", sub: `${tftRank.lp} LP` }]
+                  : []),
                 { label: "Trận", value: totalGames, color: "text-white" },
                 { label: "Tỷ Lệ Thắng", value: `${winRate}%`, color: "text-violet-400" },
                 { label: "Tỷ Lệ Top 4", value: `${top4Rate}%`, color: "text-cyan-400" },
                 { label: "Kim Cương", value: player.diamonds || 0, color: "text-cyan-400", icon: true },
-              ].map((stat) => (
+              ].slice(0, 4).map((stat) => (
                 <div
                   key={stat.label}
                   className="glass-card p-4 flex flex-col items-center justify-center"
@@ -134,6 +166,11 @@ export default async function PlayerProfilePage({ params }: PageProps) {
                   <span className={`text-2xl font-bold ${stat.color}`}>
                     {stat.value}
                   </span>
+                  {(stat as any).sub && (
+                    <span className="text-[10px] text-zinc-500 font-mono">
+                      {(stat as any).sub}
+                    </span>
+                  )}
                   <span className="text-[9px] text-zinc-500 font-mono uppercase tracking-wider font-bold">
                     {stat.label}
                   </span>

@@ -471,6 +471,10 @@ export async function createTournamentV2Action(
 
     if (lobbyError) throw lobbyError;
 
+    // Send Discord webhook notification
+    const webhookEmbed = buildTournamentWebhookEmbed(tournament, lobbies, "created");
+    await sendDiscordWebhook(webhookEmbed);
+
     revalidatePath("/");
     revalidatePath("/admin");
     return { success: true, tournament, lobbies };
@@ -683,6 +687,62 @@ export async function getMatchResultsAction(tournamentId: string) {
 }
 
 // ----------------------------------------------------
+// Discord Webhook Notifications
+// ----------------------------------------------------
+async function sendDiscordWebhook(embed: Record<string, any>) {
+  const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
+  if (!webhookUrl) {
+    console.log("DISCORD_WEBHOOK_URL not configured, skipping webhook");
+    return;
+  }
+
+  try {
+    await fetch(webhookUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ embeds: [embed] }),
+    });
+  } catch (err) {
+    console.error("Discord webhook error:", err);
+  }
+}
+
+function buildTournamentWebhookEmbed(tournament: any, lobbies: any[], type: "created" | "scored" | "finished") {
+  const colors = { created: 0x8b5cf6, scored: 0x22c55e, finished: 0xf59e0b };
+  const titles = {
+    created: "🏆 GIẢI ĐẤU MỚI ĐƯỢC TẠO",
+    scored: "📊 KẾT QUẢ TRẬN ĐẤU MỚI",
+    finished: "👑 GIẢI ĐẤU ĐÃ KẾT THÚC",
+  };
+
+  const embed: Record<string, any> = {
+    title: titles[type],
+    color: colors[type],
+    timestamp: new Date().toISOString(),
+    footer: { text: "TFT Tournament Dashboard" },
+  };
+
+  if (type === "created") {
+    embed.description = `Giải đấu **${tournament.name}** đã được tạo trên Dashboard!`;
+    embed.fields = [
+      { name: "Chế độ", value: tournament.mode === "checkmate" ? "⚔️ Checkmate" : "📊 Giải thường", inline: true },
+      { name: "Số lobby", value: `${lobbies.length}`, inline: true },
+      { name: "Đăng ký", value: "🟢 Đang mở", inline: true },
+    ];
+    if (tournament.mode === "checkmate") {
+      embed.fields.push({ name: "Mốc Checkmate", value: `${tournament.checkmate_score} điểm`, inline: true });
+    }
+    embed.fields.push({
+      name: "🔗 Xem chi tiết",
+      value: `[Mở Dashboard](${process.env.NEXT_PUBLIC_WEB_URL || "https://tactics-tournament.vercel.app"}/tournaments/${tournament.id})`,
+      inline: false,
+    });
+  }
+
+  return embed;
+}
+
+// ----------------------------------------------------
 // Auto Scoring (Riot API)
 // ----------------------------------------------------
 async function getRiotData(url: string) {
@@ -701,6 +761,38 @@ async function getRiotData(url: string) {
   }
 
   return await res.json();
+}
+
+// ----------------------------------------------------
+// TFT Rank API
+// ----------------------------------------------------
+export async function getTftRankByPuuid(puuid: string) {
+  try {
+    const url = `https://vn2.api.riotgames.com/tft/league/v1/by-puuid/${puuid}`;
+    const entries = await getRiotData(url);
+
+    if (!Array.isArray(entries) || entries.length === 0) {
+      return null;
+    }
+
+    // Find ranked TFT entry (queueType === "RANKED_TFT")
+    const ranked = entries.find((e: any) => e.queueType === "RANKED_TFT") || entries[0];
+
+    return {
+      tier: ranked.tier || "UNRANKED",
+      rank: ranked.rank || "",
+      lp: ranked.leaguePoints ?? 0,
+      wins: ranked.wins ?? 0,
+      losses: ranked.losses ?? 0,
+      winRate:
+        ranked.wins + ranked.losses > 0
+          ? Math.round((ranked.wins / (ranked.wins + ranked.losses)) * 100)
+          : 0,
+    };
+  } catch (err: any) {
+    console.error("Lỗi lấy TFT rank:", err.message);
+    return null;
+  }
 }
 
 export async function autoScoreLobbyAction(tournamentId: string, lobbyId: string) {
