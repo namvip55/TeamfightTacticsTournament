@@ -445,7 +445,7 @@ export async function createTournamentV2Action(
       .insert({
         name: name.trim(),
         mode,
-        checkmate_score: mode === "checkmate" ? checkmateScore : null,
+        checkmate_score: mode === "checkmate" ? checkmateScore : 0,
         status: "registration_open",
         registration_open: true,
         locked: false,
