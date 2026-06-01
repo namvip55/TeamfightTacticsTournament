@@ -91,7 +91,7 @@ export default function AvatarUpload({
               className="w-full h-full object-cover"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center bg-violet-500/20 text-violet-400 text-4xl font-bold">
+            <div className="w-full h-full flex items-center justify-center bg-violet-500/20 text-violet-400 text-4xl font-bold leading-none">
               {initial}
             </div>
           )}

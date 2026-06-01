@@ -127,7 +127,7 @@ export default async function PlayerProfilePage({ params }: PageProps) {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-violet-500/20 text-violet-400 text-2xl font-bold">
+                  <div className="w-full h-full flex items-center justify-center bg-violet-500/20 text-violet-400 text-2xl font-bold leading-none">
                     {(player.display_name || player.riot_id || "?")[0].toUpperCase()}
                   </div>
                 )}

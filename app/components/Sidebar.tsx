@@ -119,7 +119,7 @@ export default function Sidebar({ session, children }: SidebarProps) {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-violet-500/20 text-violet-400 text-xs font-bold">
+                  <div className="w-full h-full flex items-center justify-center bg-violet-500/20 text-violet-400 text-xs font-bold leading-none">
                     {(session.displayName || session.discordUsername || "?")[0].toUpperCase()}
                   </div>
                 )}
@@ -184,7 +184,7 @@ export default function Sidebar({ session, children }: SidebarProps) {
                 {session.avatarUrl ? (
                   <img src={session.avatarUrl} alt="" className="w-full h-full object-cover" />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-violet-500/20 text-violet-400 text-xs font-bold">
+                  <div className="w-full h-full flex items-center justify-center bg-violet-500/20 text-violet-400 text-xs font-bold leading-none">
                     {(session.displayName || session.discordUsername || "?")[0].toUpperCase()}
                   </div>
                 )}

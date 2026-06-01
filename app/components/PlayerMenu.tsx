@@ -58,7 +58,7 @@ export default function PlayerMenu({ session }: PlayerMenuProps) {
           {avatar ? (
             <img src={avatar} alt="" className="w-full h-full object-cover" />
           ) : (
-            <div className="w-full h-full flex items-center justify-center bg-violet-500/20 text-violet-400 text-xs font-bold">
+            <div className="w-full h-full flex items-center justify-center bg-violet-500/20 text-violet-400 text-xs font-bold leading-none">
               {initial}
             </div>
           )}
@@ -97,7 +97,7 @@ export default function PlayerMenu({ session }: PlayerMenuProps) {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-violet-500/20 text-violet-400 text-sm font-bold">
+                  <div className="w-full h-full flex items-center justify-center bg-violet-500/20 text-violet-400 text-sm font-bold leading-none">
                     {initial}
                   </div>
                 )}
