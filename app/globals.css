@@ -342,3 +342,35 @@ body::before {
   background-color: rgba(245, 158, 11, 0.08) !important;
 }
 
+/* Light Theme Color Overrides for better contrast */
+.light-theme .text-violet-400,
+.light-theme text-violet-400 {
+  color: #7c3aed !important;
+}
+
+.light-theme .text-cyan-400,
+.light-theme text-cyan-400 {
+  color: #0891b2 !important;
+}
+
+.light-theme .text-green-400,
+.light-theme text-green-400 {
+  color: #15803d !important;
+}
+
+.light-theme .text-amber-400,
+.light-theme text-amber-400 {
+  color: #b45309 !important;
+}
+
+.light-theme .text-rose-400,
+.light-theme text-rose-400 {
+  color: #be123c !important;
+}
+
+/* Gradient overrides for light mode panels */
+.light-theme .bg-gradient-to-br {
+  background-image: linear-gradient(135deg, rgba(139, 92, 246, 0.06) 0%, #ffffff 50%, rgba(6, 182, 212, 0.06) 100%) !important;
+}
+
+
