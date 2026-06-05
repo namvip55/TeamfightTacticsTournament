@@ -3,6 +3,7 @@ import { supabase } from "./lib/supabase";
 import { getPlayerSession } from "./lib/player-auth";
 import Sidebar from "./components/Sidebar";
 import StatCard from "./components/StatCard";
+import ThemeToggle from "./components/ThemeToggle";
 import {
   Trophy,
   Users,
@@ -40,6 +41,11 @@ export default async function Home() {
   return (
     <Sidebar session={playerSession}>
       <div className="p-4 lg:p-8 flex flex-col gap-8 max-w-7xl mx-auto">
+        <div className="flex justify-between items-center border-b border-white/[0.08] pb-4 light-theme:border-zinc-200">
+          <h2 className="text-xl font-bold tracking-tight text-white">TFT Dashboard</h2>
+          <ThemeToggle />
+        </div>
+
         {/* Hero Section */}
         <section className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-br from-violet-500/10 via-[#0d0d14] to-cyan-500/10 p-8 lg:p-12">
           {/* Ambient glow */}

@@ -218,3 +218,127 @@ body::before {
   animation: shimmer 1.5s infinite;
   border-radius: 6px;
 }
+
+/* ─── Light Theme Overrides ─── */
+.light-theme {
+  --color-background: #ffffff;
+  --color-foreground: #09090b;
+  --color-card: rgba(0, 0, 0, 0.02);
+  --color-card-foreground: #09090b;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #09090b;
+  --color-secondary: rgba(0, 0, 0, 0.04);
+  --color-secondary-foreground: #09090b;
+  --color-muted: rgba(0, 0, 0, 0.04);
+  --color-muted-foreground: #71717a;
+  --color-accent: rgba(0, 0, 0, 0.04);
+  --color-accent-foreground: #09090b;
+  --color-border: rgba(0, 0, 0, 0.08);
+  --color-input: rgba(0, 0, 0, 0.08);
+
+  --color-surface-glass: rgba(0, 0, 0, 0.02);
+  --color-surface-glass-hover: rgba(0, 0, 0, 0.04);
+  --color-surface-elevated: rgba(0, 0, 0, 0.03);
+  --color-surface-dark: #f4f4f5;
+  --color-surface-darker: #e4e4e7;
+
+  --color-text-primary: #09090b;
+  --color-text-secondary: #27272a;
+  --color-text-muted: #71717a;
+  --color-text-glow: #6d28d9;
+}
+
+.light-theme body::before {
+  background: radial-gradient(ellipse at 30% 20%, rgba(139, 92, 246, 0.04) 0%, transparent 50%),
+              radial-gradient(ellipse at 70% 80%, rgba(6, 182, 212, 0.04) 0%, transparent 50%) !important;
+}
+
+.light-theme .glass-card {
+  background: rgba(0, 0, 0, 0.02) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+.light-theme .glass-card:hover {
+  background: rgba(0, 0, 0, 0.04) !important;
+  border-color: rgba(139, 92, 246, 0.3) !important;
+}
+
+/* Hardcoded text color overrides for light mode */
+.light-theme .text-white,
+.light-theme text-white {
+  color: #09090b !important;
+}
+
+.light-theme .text-zinc-300,
+.light-theme text-zinc-300 {
+  color: #18181b !important;
+}
+
+.light-theme .text-zinc-400,
+.light-theme text-zinc-400 {
+  color: #3f3f46 !important;
+}
+
+.light-theme .text-zinc-500,
+.light-theme text-zinc-500 {
+  color: #71717a !important;
+}
+
+/* Layout and components bg and border overrides */
+.light-theme header,
+.light-theme aside,
+.light-theme .bg-\[\#0d0d14\],
+.light-theme bg-\[\#0d0d14\] {
+  background-color: #f4f4f5 !important;
+}
+
+.light-theme .bg-\[\#0a0a0f\],
+.light-theme bg-\[\#0a0a0f\] {
+  background-color: #ffffff !important;
+}
+
+.light-theme .border-white\/\[0\.08\],
+.light-theme border-white\/\[0\.08\] {
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+.light-theme .bg-white\/\[0\.03\],
+.light-theme bg-white\/\[0\.03\] {
+  background-color: rgba(0, 0, 0, 0.02) !important;
+}
+
+.light-theme .bg-white\/\[0\.04\],
+.light-theme bg-white\/\[0\.04\] {
+  background-color: rgba(0, 0, 0, 0.03) !important;
+}
+
+.light-theme .bg-white\/\[0\.06\],
+.light-theme bg-white\/\[0\.06\] {
+  background-color: rgba(0, 0, 0, 0.05) !important;
+}
+
+.light-theme .bg-\[\#0d0d14\]\/10,
+.light-theme bg-\[\#0d0d14\]\/10 {
+  background-color: rgba(244, 244, 245, 0.1) !important;
+}
+
+.light-theme .border-white\/\[0\.06\],
+.light-theme border-white\/\[0\.06\] {
+  border-color: rgba(0, 0, 0, 0.06) !important;
+}
+
+.light-theme .bg-violet-500\/10,
+.light-theme bg-violet-500\/10 {
+  background-color: rgba(139, 92, 246, 0.08) !important;
+}
+
+.light-theme .bg-cyan-500\/10,
+.light-theme bg-cyan-500\/10 {
+  background-color: rgba(6, 182, 212, 0.08) !important;
+}
+
+.light-theme .bg-amber-500\/10,
+.light-theme bg-amber-500\/10 {
+  background-color: rgba(245, 158, 11, 0.08) !important;
+}
+
