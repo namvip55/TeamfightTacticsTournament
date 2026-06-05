@@ -20,25 +20,22 @@ import {
 export const revalidate = 0;
 
 export default async function Home() {
-  const { data: tournaments, error: tError } = await supabase
-    .from("tournaments")
-    .select("*")
-    .order("created_at", { ascending: false });
-
-  const { count: totalPlayers } = await supabase
-    .from("players")
-    .select("*", { count: "exact", head: true });
-
-  const { count: totalLobbies } = await supabase
-    .from("lobbies")
-    .select("*", { count: "exact", head: true });
+  const [
+    { data: tournaments, error: tError },
+    { count: totalPlayers },
+    { count: totalLobbies },
+    playerSession
+  ] = await Promise.all([
+    supabase.from("tournaments").select("*").order("created_at", { ascending: false }),
+    supabase.from("players").select("*", { count: "exact", head: true }),
+    supabase.from("lobbies").select("*", { count: "exact", head: true }),
+    getPlayerSession()
+  ]);
 
   const activeTournament =
     tournaments?.find(
       (t) => t.status === "registration_open" || t.status === "active"
     ) || tournaments?.[0];
-
-  const playerSession = await getPlayerSession();
 
   return (
     <Sidebar session={playerSession}>

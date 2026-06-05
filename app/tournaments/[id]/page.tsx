@@ -29,50 +29,30 @@ export default async function TournamentDetailPage({
   const tournamentId = resolvedParams.id;
   const activeTab = resolvedSearchParams.tab || "standings";
 
-  const { data: tournament, error: tErr } = await supabase
-    .from("tournaments")
-    .select("*")
-    .eq("id", tournamentId)
-    .maybeSingle();
+  const [
+    { data: tournament, error: tErr },
+    { data: lobbies },
+    { data: standings },
+    { data: lobbyPlayers },
+    { data: matchResults },
+    { data: matchPlayerResults },
+    playerSession
+  ] = await Promise.all([
+    supabase.from("tournaments").select("*").eq("id", tournamentId).maybeSingle(),
+    supabase.from("lobbies").select("*").eq("tournament_id", tournamentId).order("created_at", { ascending: true }),
+    supabase.from("standings").select("*").eq("tournament_id", tournamentId).order("total_points", { ascending: false }).order("avg_placement", { ascending: true }),
+    supabase.from("lobby_players").select("*").eq("tournament_id", tournamentId).order("created_at", { ascending: true }),
+    supabase.from("match_results").select("*").eq("tournament_id", tournamentId).order("created_at", { ascending: false }),
+    supabase.from("match_player_results").select("*").eq("tournament_id", tournamentId).order("placement", { ascending: true }),
+    getPlayerSession()
+  ]);
 
   if (tErr || !tournament) {
     notFound();
   }
 
-  const { data: lobbies } = await supabase
-    .from("lobbies")
-    .select("*")
-    .eq("tournament_id", tournamentId)
-    .order("created_at", { ascending: true });
-
-  const { data: standings } = await supabase
-    .from("standings")
-    .select("*")
-    .eq("tournament_id", tournamentId)
-    .order("total_points", { ascending: false })
-    .order("avg_placement", { ascending: true });
-
-  const { data: lobbyPlayers } = await supabase
-    .from("lobby_players")
-    .select("*")
-    .eq("tournament_id", tournamentId)
-    .order("created_at", { ascending: true });
-
-  const { data: matchResults } = await supabase
-    .from("match_results")
-    .select("*")
-    .eq("tournament_id", tournamentId)
-    .order("created_at", { ascending: false });
-
-  const { data: matchPlayerResults } = await supabase
-    .from("match_player_results")
-    .select("*")
-    .eq("tournament_id", tournamentId)
-    .order("placement", { ascending: true });
-
   const totalPlayers = lobbyPlayers?.length || 0;
   const totalLobbies = lobbies?.length || 0;
-  const playerSession = await getPlayerSession();
 
   return (
     <Sidebar session={playerSession}>

@@ -39,37 +39,30 @@ export default async function PlayerProfilePage({ params }: PageProps) {
   const resolvedParams = await params;
   const playerId = resolvedParams.id;
 
-  const { data: player, error: pErr } = await supabase
-    .from("players")
-    .select("*")
-    .or(`id.eq.${playerId},discord_id.eq.${playerId},puuid.eq.${playerId}`)
-    .maybeSingle();
+  const [{ data: player, error: pErr }, playerSession] = await Promise.all([
+    supabase
+      .from("players")
+      .select("*")
+      .or(`id.eq.${playerId},discord_id.eq.${playerId},puuid.eq.${playerId}`)
+      .maybeSingle(),
+    getPlayerSession()
+  ]);
 
   if (pErr || !player) {
     notFound();
   }
 
-  const { data: standings } = await supabase
-    .from("standings")
-    .select("*, tournaments(name, status, created_at)")
-    .eq("player_id", player.id)
-    .order("created_at", { ascending: false });
-
-  const { data: matchHistory } = await supabase
-    .from("match_player_results")
-    .select("*, lobbies(name), tournaments(name)")
-    .eq("player_id", player.id)
-    .order("created_at", { ascending: false })
-    .limit(20);
-
-  const { data: trophies } = await supabase
-    .from("trophies")
-    .select("*")
-    .eq("player_id", player.id)
-    .order("awarded_at", { ascending: false });
-
-  // Fetch TFT Rank from Riot API
-  const tftRank = player.puuid ? await getTftRankByPuuid(player.puuid) : null;
+  const [
+    { data: standings },
+    { data: matchHistory },
+    { data: trophies },
+    tftRank
+  ] = await Promise.all([
+    supabase.from("standings").select("*, tournaments(name, status, created_at)").eq("player_id", player.id).order("created_at", { ascending: false }),
+    supabase.from("match_player_results").select("*, lobbies(name), tournaments(name)").eq("player_id", player.id).order("created_at", { ascending: false }).limit(20),
+    supabase.from("trophies").select("*").eq("player_id", player.id).order("awarded_at", { ascending: false }),
+    player.puuid ? getTftRankByPuuid(player.puuid) : Promise.resolve(null)
+  ]);
 
   let totalGames = 0;
   let totalWins = 0;
@@ -87,8 +80,6 @@ export default async function PlayerProfilePage({ params }: PageProps) {
     totalGames > 0 ? ((totalWins / totalGames) * 100).toFixed(1) : "0.0";
   const top4Rate =
     totalGames > 0 ? ((totalTop4 / totalGames) * 100).toFixed(1) : "0.0";
-
-  const playerSession = await getPlayerSession();
 
   return (
     <Sidebar session={playerSession}>

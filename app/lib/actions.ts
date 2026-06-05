@@ -768,6 +768,34 @@ async function getRiotData(url: string) {
 // ----------------------------------------------------
 export async function getTftRankByPuuid(puuid: string) {
   try {
+    // 1. Check cache in Supabase
+    const { data: player } = await supabase
+      .from("players")
+      .select("id, tft_tier, tft_rank, tft_lp, tft_wins, tft_losses, tft_rank_updated_at")
+      .eq("puuid", puuid)
+      .maybeSingle();
+
+    const CACHE_HOURS = 2; // Cache Riot API data for 2 hours to avoid limits and increase speed
+    if (player && player.tft_rank_updated_at) {
+      const updatedAt = new Date(player.tft_rank_updated_at);
+      const now = new Date();
+      const diffHours = (now.getTime() - updatedAt.getTime()) / (1000 * 60 * 60);
+      
+      if (diffHours < CACHE_HOURS) {
+        return {
+          tier: player.tft_tier || "UNRANKED",
+          rank: player.tft_rank || "",
+          lp: player.tft_lp ?? 0,
+          wins: player.tft_wins ?? 0,
+          losses: player.tft_losses ?? 0,
+          winRate: (player.tft_wins ?? 0) + (player.tft_losses ?? 0) > 0 
+            ? Math.round(((player.tft_wins ?? 0) / ((player.tft_wins ?? 0) + (player.tft_losses ?? 0))) * 100) 
+            : 0
+        };
+      }
+    }
+
+    // 2. Fetch from Riot API
     const url = `https://vn2.api.riotgames.com/tft/league/v1/by-puuid/${puuid}`;
     const entries = await getRiotData(url);
 
@@ -777,18 +805,32 @@ export async function getTftRankByPuuid(puuid: string) {
 
     // Find ranked TFT entry (queueType === "RANKED_TFT")
     const ranked = entries.find((e: any) => e.queueType === "RANKED_TFT") || entries[0];
-
-    return {
+    
+    const result = {
       tier: ranked.tier || "UNRANKED",
       rank: ranked.rank || "",
       lp: ranked.leaguePoints ?? 0,
       wins: ranked.wins ?? 0,
       losses: ranked.losses ?? 0,
       winRate:
-        ranked.wins + ranked.losses > 0
+        (ranked.wins ?? 0) + (ranked.losses ?? 0) > 0
           ? Math.round((ranked.wins / (ranked.wins + ranked.losses)) * 100)
           : 0,
     };
+
+    // 3. Save cache to Supabase
+    if (player) {
+      await supabase.from("players").update({
+        tft_tier: result.tier,
+        tft_rank: result.rank,
+        tft_lp: result.lp,
+        tft_wins: result.wins,
+        tft_losses: result.losses,
+        tft_rank_updated_at: new Date().toISOString()
+      }).eq("id", player.id);
+    }
+
+    return result;
   } catch (err: any) {
     console.error("Lỗi lấy TFT rank:", err.message);
     return null;

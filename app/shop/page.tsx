@@ -8,13 +8,10 @@ import { ShoppingBag } from "lucide-react";
 export const revalidate = 0;
 
 export default async function ShopPage() {
-  const session = await getPlayerSession();
-
-  const { data: items } = await supabase
-    .from("shop_items")
-    .select("*")
-    .eq("active", true)
-    .order("price", { ascending: true });
+  const [session, { data: items }] = await Promise.all([
+    getPlayerSession(),
+    supabase.from("shop_items").select("*").eq("active", true).order("price", { ascending: true })
+  ]);
 
   let purchases: any[] = [];
   if (session) {

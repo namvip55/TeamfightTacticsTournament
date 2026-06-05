@@ -14,33 +14,23 @@ export default async function AdminPage() {
     redirect("/admin/login");
   }
 
-  const { data: tournaments } = await supabase
-    .from("tournaments")
-    .select("*")
-    .order("created_at", { ascending: false });
-
-  const { data: lobbies } = await supabase.from("lobbies").select("*");
-
-  const { data: lobbyPlayers } = await supabase
-    .from("lobby_players")
-    .select("*");
-
-  const { data: matchResults } = await supabase
-    .from("match_results")
-    .select("*")
-    .order("created_at", { ascending: false });
-
-  const { data: standings } = await supabase
-    .from("standings")
-    .select("*")
-    .order("total_points", { ascending: false });
-
-  const { data: shopItems } = await supabase
-    .from("shop_items")
-    .select("*")
-    .order("created_at", { ascending: false });
-
-  const playerSession = await getPlayerSession();
+  const [
+    { data: tournaments },
+    { data: lobbies },
+    { data: lobbyPlayers },
+    { data: matchResults },
+    { data: standings },
+    { data: shopItems },
+    playerSession
+  ] = await Promise.all([
+    supabase.from("tournaments").select("*").order("created_at", { ascending: false }),
+    supabase.from("lobbies").select("*"),
+    supabase.from("lobby_players").select("*"),
+    supabase.from("match_results").select("*").order("created_at", { ascending: false }),
+    supabase.from("standings").select("*").order("total_points", { ascending: false }),
+    supabase.from("shop_items").select("*").order("created_at", { ascending: false }),
+    getPlayerSession()
+  ]);
 
   return (
     <Sidebar session={playerSession}>

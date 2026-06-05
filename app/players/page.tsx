@@ -15,15 +15,13 @@ import {
 export const revalidate = 0;
 
 export default async function PlayersPage() {
-  const { data: players } = await supabase
-    .from("players")
-    .select("*")
-    .order("created_at", { ascending: false });
-
-  const { data: standings } = await supabase
-    .from("standings")
-    .select("*, tournaments(name, status)")
-    .order("total_points", { ascending: false });
+  const [
+    { data: players },
+    { data: standings }
+  ] = await Promise.all([
+    supabase.from("players").select("*").order("created_at", { ascending: false }),
+    supabase.from("standings").select("*, tournaments(name, status)").order("total_points", { ascending: false })
+  ]);
 
   const standingsByPlayer: Record<string, any[]> = {};
   if (standings) {
