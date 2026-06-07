@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -261,11 +261,11 @@ export default function AdminClient({
       setNewTournamentName("");
       setNewLobbyCount(1);
       setMessage({
-        text: `Đã tạo giải đấu "${result.tournament.name}" với ${result.lobbies?.length || 0} lobby!`,
+        text: `ÄÃ£ táº¡o giáº£i Ä‘áº¥u "${result.tournament.name}" vá»›i ${result.lobbies?.length || 0} lobby!`,
         type: "success",
       });
     } else {
-      setMessage({ text: `Lỗi: ${result.error}`, type: "error" });
+      setMessage({ text: `Lá»—i: ${result.error}`, type: "error" });
     }
   };
 
@@ -277,23 +277,23 @@ export default function AdminClient({
     const result = await toggleRegistrationAction(id, !currentStatus);
     if (result.success) {
       setMessage({
-        text: `Đã ${!currentStatus ? "MỞ" : "ĐÓNG"} đăng ký!`,
+        text: `ÄÃ£ ${!currentStatus ? "Má»ž" : "ÄÃ“NG"} Ä‘Äƒng kÃ½!`,
         type: "success",
       });
     } else {
-      setMessage({ text: `Lỗi: ${result.error}`, type: "error" });
+      setMessage({ text: `Lá»—i: ${result.error}`, type: "error" });
     }
   };
 
   const handleDeleteTournament = async (id: string, name: string) => {
-    if (!confirm(`Xóa giải đấu "${name}" và toàn bộ dữ liệu?`)) return;
+    if (!confirm(`XÃ³a giáº£i Ä‘áº¥u "${name}" vÃ  toÃ n bá»™ dá»¯ liá»‡u?`)) return;
     setMessage(null);
     const result = await deleteTournamentAction(id);
     if (result.success) {
       if (selectedTournamentId === id) setSelectedTournamentId("");
-      setMessage({ text: `Đã xóa "${name}"!`, type: "success" });
+      setMessage({ text: `ÄÃ£ xÃ³a "${name}"!`, type: "success" });
     } else {
-      setMessage({ text: `Lỗi: ${result.error}`, type: "error" });
+      setMessage({ text: `Lá»—i: ${result.error}`, type: "error" });
     }
   };
 
@@ -309,10 +309,10 @@ export default function AdminClient({
     );
     setIsSubmittingScore(false);
     if (result.success) {
-      setMessage({ text: result.message || "Đã lưu điểm!", type: "success" });
+      setMessage({ text: result.message || "ÄÃ£ lÆ°u Ä‘iá»ƒm!", type: "success" });
       setScoringPlacements({});
     } else {
-      setMessage({ text: `Lỗi: ${result.error}`, type: "error" });
+      setMessage({ text: `Lá»—i: ${result.error}`, type: "error" });
     }
   };
 
@@ -327,11 +327,11 @@ export default function AdminClient({
     setIsAutoScoring(false);
     if (result.success) {
       setMessage({
-        text: result.message || "Tính điểm thành công!",
+        text: result.message || "TÃ­nh Ä‘iá»ƒm thÃ nh cÃ´ng!",
         type: "success",
       });
     } else {
-      setMessage({ text: `Lỗi: ${result.error}`, type: "error" });
+      setMessage({ text: `Lá»—i: ${result.error}`, type: "error" });
     }
   };
 
@@ -344,15 +344,15 @@ export default function AdminClient({
       discordId
     );
     if (result.success) {
-      setMessage({ text: result.message || "Đã kick!", type: "success" });
+      setMessage({ text: result.message || "ÄÃ£ kick!", type: "success" });
     } else {
-      setMessage({ text: `Lỗi: ${result.error}`, type: "error" });
+      setMessage({ text: `Lá»—i: ${result.error}`, type: "error" });
     }
   };
 
   const handleMovePlayer = async (discordId: string, riotId: string) => {
     if (!moveTargetLobbyId) {
-      setMessage({ text: "Chọn lobby đích!", type: "error" });
+      setMessage({ text: "Chá»n lobby Ä‘Ã­ch!", type: "error" });
       return;
     }
     setMessage(null);
@@ -362,10 +362,10 @@ export default function AdminClient({
       moveTargetLobbyId
     );
     if (result.success) {
-      setMessage({ text: result.message || "Đã chuyển!", type: "success" });
+      setMessage({ text: result.message || "ÄÃ£ chuyá»ƒn!", type: "success" });
       setMoveTargetLobbyId("");
     } else {
-      setMessage({ text: `Lỗi: ${result.error}`, type: "error" });
+      setMessage({ text: `Lá»—i: ${result.error}`, type: "error" });
     }
   };
 
@@ -376,10 +376,10 @@ export default function AdminClient({
     const result = await undoMatchScoreAction(undoMatchId.trim());
     setIsUndoing(false);
     if (result.success) {
-      setMessage({ text: result.message || "Đã undo!", type: "success" });
+      setMessage({ text: result.message || "ÄÃ£ undo!", type: "success" });
       setUndoMatchId("");
     } else {
-      setMessage({ text: `Lỗi: ${result.error}`, type: "error" });
+      setMessage({ text: `Lá»—i: ${result.error}`, type: "error" });
     }
   };
 
@@ -390,9 +390,9 @@ export default function AdminClient({
     const result = await addLobbyAction(selectedTournamentId);
     setIsAddingLobby(false);
     if (result.success) {
-      setMessage({ text: result.message || "Đã thêm!", type: "success" });
+      setMessage({ text: result.message || "ÄÃ£ thÃªm!", type: "success" });
     } else {
-      setMessage({ text: `Lỗi: ${result.error}`, type: "error" });
+      setMessage({ text: `Lá»—i: ${result.error}`, type: "error" });
     }
   };
 
@@ -403,11 +403,11 @@ export default function AdminClient({
     setIsSeeding(false);
     if (result.success) {
       setMessage({
-        text: result.message || "Đã seed dữ liệu mẫu!",
+        text: result.message || "ÄÃ£ seed dá»¯ liá»‡u máº«u!",
         type: "success",
       });
     } else {
-      setMessage({ text: `Lỗi: ${result.error}`, type: "error" });
+      setMessage({ text: `Lá»—i: ${result.error}`, type: "error" });
     }
   };
 
@@ -427,9 +427,9 @@ export default function AdminClient({
       setNewItemName("");
       setNewItemDesc("");
       setNewItemPrice(50);
-      setMessage({ text: "Đã tạo vật phẩm!", type: "success" });
+      setMessage({ text: "ÄÃ£ táº¡o váº­t pháº©m!", type: "success" });
     } else {
-      setMessage({ text: `Lỗi: ${result.error}`, type: "error" });
+      setMessage({ text: `Lá»—i: ${result.error}`, type: "error" });
     }
   };
 
@@ -463,7 +463,7 @@ export default function AdminClient({
     setIsSubmittingComp(false);
     if (result.success) {
       setMessage({
-        text: editingCompId ? "Đã cập nhật đội hình!" : "Đã tạo đội hình mới!",
+        text: editingCompId ? "ÄÃ£ cáº­p nháº­t Ä‘á»™i hÃ¬nh!" : "ÄÃ£ táº¡o Ä‘á»™i hÃ¬nh má»›i!",
         type: "success",
       });
       // Reset form
@@ -479,7 +479,7 @@ export default function AdminClient({
       setCompEarlyUnits([]);
       setEditingCompId(null);
     } else {
-      setMessage({ text: `Lỗi: ${result.error}`, type: "error" });
+      setMessage({ text: `Lá»—i: ${result.error}`, type: "error" });
     }
   };
 
@@ -499,13 +499,13 @@ export default function AdminClient({
   };
 
   const handleDeleteComp = async (id: string, name: string) => {
-    if (!confirm(`Xóa đội hình "${name}"?`)) return;
+    if (!confirm(`XÃ³a Ä‘á»™i hÃ¬nh "${name}"?`)) return;
     setMessage(null);
     const result = await deleteCompAction(id);
     if (result.success) {
-      setMessage({ text: `Đã xóa đội hình "${name}"!`, type: "success" });
+      setMessage({ text: `ÄÃ£ xÃ³a Ä‘á»™i hÃ¬nh "${name}"!`, type: "success" });
     } else {
-      setMessage({ text: `Lỗi: ${result.error}`, type: "error" });
+      setMessage({ text: `Lá»—i: ${result.error}`, type: "error" });
     }
   };
 
@@ -513,9 +513,9 @@ export default function AdminClient({
     setMessage(null);
     const result = await toggleCompAction(id, !current);
     if (result.success) {
-      setMessage({ text: `Đã ${!current ? "kích hoạt" : "ẩn"} đội hình!`, type: "success" });
+      setMessage({ text: `ÄÃ£ ${!current ? "kÃ­ch hoáº¡t" : "áº©n"} Ä‘á»™i hÃ¬nh!`, type: "success" });
     } else {
-      setMessage({ text: `Lỗi: ${result.error}`, type: "error" });
+      setMessage({ text: `Lá»—i: ${result.error}`, type: "error" });
     }
   };
 
@@ -534,9 +534,9 @@ export default function AdminClient({
 
     if (result.success && result.url) {
       setCompCoverImageUrl(result.url);
-      setMessage({ text: "Tải ảnh lên thành công!", type: "success" });
+      setMessage({ text: "Táº£i áº£nh lÃªn thÃ nh cÃ´ng!", type: "success" });
     } else {
-      setMessage({ text: `Lỗi tải ảnh: ${result.error}`, type: "error" });
+      setMessage({ text: `Lá»—i táº£i áº£nh: ${result.error}`, type: "error" });
     }
   };
 
@@ -557,7 +557,7 @@ export default function AdminClient({
       <div className="glass-card p-4 flex items-center justify-between">
         <div className="flex items-center gap-2 text-green-400 font-mono text-xs font-bold">
           <span className="w-2 h-2 bg-green-400 rounded-full neon-pulse" />
-          Đã đăng nhập quyền Quản trị viên
+          ÄÃ£ Ä‘Äƒng nháº­p quyá»n Quáº£n trá»‹ viÃªn
         </div>
         <button
           onClick={handleLogout}
@@ -565,7 +565,7 @@ export default function AdminClient({
           className="px-4 py-1.5 bg-rose-500/10 text-rose-400 border border-rose-500/20 rounded-lg hover:bg-rose-500/20 font-bold text-xs transition-colors cursor-pointer disabled:opacity-50 flex items-center gap-2"
         >
           <LogOut className="w-3.5 h-3.5" />
-          {isLoggingOut ? "Đang đăng xuất..." : "Đăng Xuất"}
+          {isLoggingOut ? "Äang Ä‘Äƒng xuáº¥t..." : "ÄÄƒng Xuáº¥t"}
         </button>
       </div>
 
@@ -574,13 +574,13 @@ export default function AdminClient({
         <div className="flex-1 flex flex-col gap-1.5">
           <span className="text-[10px] text-violet-400 font-mono uppercase tracking-widest font-bold flex items-center gap-1">
             <Sparkles className="w-3 h-3" />
-            Trải Nghiệm Thử
+            Tráº£i Nghiá»‡m Thá»­
           </span>
           <h3 className="text-lg font-semibold text-white">
-            Khởi tạo dữ liệu mẫu
+            Khá»Ÿi táº¡o dá»¯ liá»‡u máº«u
           </h3>
           <p className="text-xs text-zinc-500 leading-relaxed max-w-2xl font-mono">
-            Tạo giải đấu mẫu với 8 cờ thủ, điểm số và BXH.
+            Táº¡o giáº£i Ä‘áº¥u máº«u vá»›i 8 cá» thá»§, Ä‘iá»ƒm sá»‘ vÃ  BXH.
           </p>
         </div>
         <button
@@ -591,10 +591,10 @@ export default function AdminClient({
           {isSeeding ? (
             <>
               <Loader2 className="w-4 h-4 animate-spin" />
-              Đang Khởi Tạo...
+              Äang Khá»Ÿi Táº¡o...
             </>
           ) : (
-            "Khởi Tạo Dữ Liệu Mẫu"
+            "Khá»Ÿi Táº¡o Dá»¯ Liá»‡u Máº«u"
           )}
         </button>
       </section>
@@ -619,7 +619,7 @@ export default function AdminClient({
             onClick={() => setMessage(null)}
             className="text-zinc-500 hover:text-zinc-300 cursor-pointer"
           >
-            ✕
+            âœ•
           </button>
         </div>
       )}
@@ -632,7 +632,7 @@ export default function AdminClient({
           <div className="glass-card p-5 flex flex-col gap-4">
             <h3 className="text-xs font-mono font-bold tracking-wide uppercase text-violet-400 flex items-center gap-2">
               <Plus className="w-3.5 h-3.5" />
-              Tạo Giải Đấu Mới
+              Táº¡o Giáº£i Äáº¥u Má»›i
             </h3>
             <form
               onSubmit={handleCreateTournament}
@@ -642,7 +642,7 @@ export default function AdminClient({
                 type="text"
                 value={newTournamentName}
                 onChange={(e) => setNewTournamentName(e.target.value)}
-                placeholder="Tên giải đấu..."
+                placeholder="TÃªn giáº£i Ä‘áº¥u..."
                 required
                 disabled={isCreating}
                 className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2 text-sm font-mono text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:border-violet-500/50"
@@ -650,7 +650,7 @@ export default function AdminClient({
               <div className="grid grid-cols-2 gap-3">
                 <div className="flex flex-col gap-1">
                   <label className="text-[10px] text-zinc-500 font-mono uppercase font-bold">
-                    Số Lobby
+                    Sá»‘ Lobby
                   </label>
                   <input
                     type="number"
@@ -667,14 +667,14 @@ export default function AdminClient({
                 </div>
                 <div className="flex flex-col gap-1">
                   <label className="text-[10px] text-zinc-500 font-mono uppercase font-bold">
-                    Chế độ
+                    Cháº¿ Ä‘á»™
                   </label>
                   <select
                     value={newMode}
                     onChange={(e) => setNewMode(e.target.value)}
                     className="bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2 text-sm font-mono text-zinc-200 focus:outline-none focus:border-violet-500/50 cursor-pointer"
                   >
-                    <option value="normal">Giải thường</option>
+                    <option value="normal">Giáº£i thÆ°á»ng</option>
                     <option value="checkmate">Checkmate</option>
                   </select>
                 </div>
@@ -682,7 +682,7 @@ export default function AdminClient({
               {newMode === "checkmate" && (
                 <div className="flex flex-col gap-1">
                   <label className="text-[10px] text-zinc-500 font-mono uppercase font-bold">
-                    Mốc điểm Checkmate
+                    Má»‘c Ä‘iá»ƒm Checkmate
                   </label>
                   <input
                     type="number"
@@ -701,7 +701,7 @@ export default function AdminClient({
                 disabled={isCreating || !newTournamentName.trim()}
                 className="w-full py-2 bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-500 hover:to-violet-400 text-white font-semibold rounded-lg transition-all cursor-pointer disabled:opacity-50 text-sm"
               >
-                {isCreating ? "Đang tạo..." : "Tạo Giải Đấu"}
+                {isCreating ? "Äang táº¡o..." : "Táº¡o Giáº£i Äáº¥u"}
               </button>
             </form>
           </div>
@@ -711,7 +711,7 @@ export default function AdminClient({
             <div className="p-4 border-b border-white/[0.06]">
               <h3 className="text-xs font-mono font-bold tracking-wide uppercase text-zinc-400 flex items-center gap-2">
                 <Trophy className="w-3.5 h-3.5 text-violet-400" />
-                Giải Đấu ({tournaments.length})
+                Giáº£i Äáº¥u ({tournaments.length})
               </h3>
             </div>
             {tournaments.length > 0 ? (
@@ -741,9 +741,9 @@ export default function AdminClient({
                         )}
                       >
                         {t.status === "registration_open"
-                          ? "Mở"
+                          ? "Má»Ÿ"
                           : t.status === "active"
-                          ? "Đấu"
+                          ? "Äáº¥u"
                           : "Xong"}
                       </span>
                     </div>
@@ -761,7 +761,7 @@ export default function AdminClient({
                     {t.winner_riot_id && (
                       <div className="mt-1.5 text-[10px] text-amber-400 font-mono font-bold flex items-center gap-1">
                         <Crown className="w-3 h-3" />
-                        Vô địch: {t.winner_riot_id}
+                        VÃ´ Ä‘á»‹ch: {t.winner_riot_id}
                       </div>
                     )}
                     <div
@@ -781,11 +781,11 @@ export default function AdminClient({
                       >
                         {t.registration_open ? (
                           <>
-                            <Lock className="w-2.5 h-2.5" /> Khóa
+                            <Lock className="w-2.5 h-2.5" /> KhÃ³a
                           </>
                         ) : (
                           <>
-                            <Unlock className="w-2.5 h-2.5" /> Mở
+                            <Unlock className="w-2.5 h-2.5" /> Má»Ÿ
                           </>
                         )}
                       </button>
@@ -799,7 +799,7 @@ export default function AdminClient({
                         onClick={() => handleDeleteTournament(t.id, t.name)}
                         className="px-2 py-1 rounded text-[10px] border border-white/[0.06] bg-white/[0.02] text-zinc-500 hover:bg-rose-500/10 hover:text-rose-400 hover:border-rose-500/30 font-bold transition-colors cursor-pointer flex items-center gap-1"
                       >
-                        <Trash2 className="w-2.5 h-2.5" /> Xóa
+                        <Trash2 className="w-2.5 h-2.5" /> XÃ³a
                       </button>
                     </div>
                   </div>
@@ -807,7 +807,7 @@ export default function AdminClient({
               </div>
             ) : (
               <div className="p-8 text-center text-zinc-500 text-xs">
-                Chưa có giải đấu.
+                ChÆ°a cÃ³ giáº£i Ä‘áº¥u.
               </div>
             )}
           </div>
@@ -827,28 +827,28 @@ export default function AdminClient({
                     className="data-[state=active]:bg-violet-500/10 data-[state=active]:text-violet-400 text-zinc-400 border border-transparent px-4 py-2 text-xs font-mono font-bold rounded-lg"
                   >
                     <Gamepad2 className="w-3.5 h-3.5 mr-1.5" />
-                    Quản Lý Lobby
+                    Quáº£n LÃ½ Lobby
                   </TabsTrigger>
                   <TabsTrigger
                     value="scoring"
                     className="data-[state=active]:bg-violet-500/10 data-[state=active]:text-violet-400 text-zinc-400 border border-transparent px-4 py-2 text-xs font-mono font-bold rounded-lg"
                   >
                     <Zap className="w-3.5 h-3.5 mr-1.5" />
-                    Tính Điểm
+                    TÃ­nh Äiá»ƒm
                   </TabsTrigger>
                   <TabsTrigger
                     value="history"
                     className="data-[state=active]:bg-violet-500/10 data-[state=active]:text-violet-400 text-zinc-400 border border-transparent px-4 py-2 text-xs font-mono font-bold rounded-lg"
                   >
                     <History className="w-3.5 h-3.5 mr-1.5" />
-                    Lịch Sử ({tournamentMatchResults.length})
+                    Lá»‹ch Sá»­ ({tournamentMatchResults.length})
                   </TabsTrigger>
                   <TabsTrigger
                     value="award"
                     className="data-[state=active]:bg-amber-500/10 data-[state=active]:text-amber-400 text-zinc-400 border border-transparent px-4 py-2 text-xs font-mono font-bold rounded-lg"
                   >
                     <Crown className="w-3.5 h-3.5 mr-1.5" />
-                    Trao Giải
+                    Trao Giáº£i
                   </TabsTrigger>
                   <TabsTrigger
                     value="shop"
@@ -857,20 +857,14 @@ export default function AdminClient({
                     <ShoppingBag className="w-3.5 h-3.5 mr-1.5" />
                     Shop ({shopItems.length})
                   </TabsTrigger>
-                  <TabsTrigger
-                    value="comps"
-                    className="data-[state=active]:bg-violet-500/10 data-[state=active]:text-violet-400 text-zinc-400 border border-transparent px-4 py-2 text-xs font-mono font-bold rounded-lg"
-                  >
-                    <Crown className="w-3.5 h-3.5 mr-1.5" />
-                    Đội Hình Hot ({comps.length})
-                  </TabsTrigger>
+
                 </TabsList>
 
                 {/* Selected Tournament Info */}
                 <div className="glass-card p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 mt-4">
                   <div className="flex flex-col gap-1">
                     <span className="text-[9px] text-zinc-500 font-mono uppercase tracking-wider">
-                      Đang Chọn
+                      Äang Chá»n
                     </span>
                     <span className="text-sm font-bold text-white">
                       {selectedTournament?.name}
@@ -879,7 +873,7 @@ export default function AdminClient({
                       {selectedTournament?.mode === "checkmate" && (
                         <span className="px-1.5 py-0.5 bg-rose-500/10 text-rose-400 border border-rose-500/20 rounded font-bold flex items-center gap-1">
                           <Swords className="w-2.5 h-2.5" />
-                          CHECKMATE ({selectedTournament.checkmate_score}đ)
+                          CHECKMATE ({selectedTournament.checkmate_score}Ä‘)
                         </span>
                       )}
                       <span>{activeLobbies.length} lobby</span>
@@ -889,7 +883,7 @@ export default function AdminClient({
                     href={`/tournaments/${selectedTournamentId}`}
                     className="px-3 py-1.5 bg-white/[0.04] border border-white/[0.08] rounded-lg text-xs font-mono font-bold text-zinc-300 hover:text-white hover:border-violet-500/30 transition-colors flex items-center gap-1"
                   >
-                    <Eye className="w-3 h-3" /> Xem BXH →
+                    <Eye className="w-3 h-3" /> Xem BXH â†’
                   </Link>
                 </div>
 
@@ -926,7 +920,7 @@ export default function AdminClient({
                         className="px-4 py-2 rounded-lg border border-dashed border-violet-500/30 text-xs font-mono font-bold text-violet-400 hover:bg-violet-500/5 transition-colors cursor-pointer disabled:opacity-50 flex items-center gap-1"
                       >
                         <Plus className="w-3 h-3" />
-                        {isAddingLobby ? "..." : "Thêm Lobby"}
+                        {isAddingLobby ? "..." : "ThÃªm Lobby"}
                       </button>
                     </div>
 
@@ -934,8 +928,8 @@ export default function AdminClient({
                       <div className="glass-card overflow-hidden">
                         <div className="p-4 border-b border-white/[0.06] flex items-center justify-between">
                           <h4 className="text-sm font-mono font-bold text-zinc-200">
-                            {currentLobby.name} — {playersInLobby.length}/8
-                            tuyển thủ
+                            {currentLobby.name} â€” {playersInLobby.length}/8
+                            tuyá»ƒn thá»§
                           </h4>
                         </div>
                         {playersInLobby.length > 0 ? (
@@ -962,7 +956,7 @@ export default function AdminClient({
                                         )}
                                       >
                                         Top {player.placement} (+
-                                        {player.points}đ)
+                                        {player.points}Ä‘)
                                       </span>
                                     )}
                                   </div>
@@ -978,7 +972,7 @@ export default function AdminClient({
                                     }
                                     className="bg-white/[0.03] border border-white/[0.08] rounded px-2 py-1.5 text-[10px] font-mono text-zinc-300 cursor-pointer focus:outline-none focus:border-violet-500/50"
                                   >
-                                    <option value="">Chuyển đến...</option>
+                                    <option value="">Chuyá»ƒn Ä‘áº¿n...</option>
                                     {activeLobbies
                                       .filter((l) => l.id !== currentLobby.id)
                                       .map((l) => {
@@ -1003,7 +997,7 @@ export default function AdminClient({
                                     className="px-3 py-1.5 bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 rounded text-[10px] font-mono font-bold hover:bg-cyan-500/20 transition-colors cursor-pointer disabled:opacity-40 flex items-center gap-1"
                                   >
                                     <ArrowRightLeft className="w-3 h-3" />
-                                    Chuyển
+                                    Chuyá»ƒn
                                   </button>
                                   <button
                                     onClick={() =>
@@ -1023,7 +1017,7 @@ export default function AdminClient({
                           </div>
                         ) : (
                           <div className="p-8 text-center text-zinc-500 text-xs font-mono">
-                            Lobby chưa có tuyển thủ nào.
+                            Lobby chÆ°a cÃ³ tuyá»ƒn thá»§ nÃ o.
                           </div>
                         )}
                       </div>
@@ -1064,18 +1058,18 @@ export default function AdminClient({
                       <>
                         {playersInLobby.length < 8 ? (
                           <div className="p-4 bg-amber-500/10 border border-amber-500/20 rounded-lg text-xs text-zinc-400 font-mono">
-                            ⚠ Cần đủ 8 cờ thủ trong {currentLobby.name} để
-                            tính điểm. Hiện tại: {playersInLobby.length}/8
+                            âš  Cáº§n Ä‘á»§ 8 cá» thá»§ trong {currentLobby.name} Ä‘á»ƒ
+                            tÃ­nh Ä‘iá»ƒm. Hiá»‡n táº¡i: {playersInLobby.length}/8
                           </div>
                         ) : (
                           <>
                             <div className="glass-card p-4 border-cyan-500/20 flex flex-col gap-3">
                               <span className="text-[10px] font-bold text-cyan-400 font-mono uppercase tracking-wider flex items-center gap-1">
                                 <Zap className="w-3 h-3" />
-                                Cách A: Tính Điểm Riot API Tự Động
+                                CÃ¡ch A: TÃ­nh Äiá»ƒm Riot API Tá»± Äá»™ng
                               </span>
                               <p className="text-[11px] text-zinc-500 font-mono">
-                                Quét trận chung gần nhất của 8 cờ thủ.
+                                QuÃ©t tráº­n chung gáº§n nháº¥t cá»§a 8 cá» thá»§.
                               </p>
                               <button
                                 onClick={handleAutoScore}
@@ -1085,17 +1079,17 @@ export default function AdminClient({
                                 {isAutoScoring ? (
                                   <>
                                     <Loader2 className="w-3 h-3 animate-spin" />
-                                    Đang Quét API...
+                                    Äang QuÃ©t API...
                                   </>
                                 ) : (
-                                  "Quét & Tính Điểm Riot API"
+                                  "QuÃ©t & TÃ­nh Äiá»ƒm Riot API"
                                 )}
                               </button>
                             </div>
 
                             <div className="flex flex-col gap-3">
                               <span className="text-[10px] font-bold text-violet-400 font-mono uppercase tracking-wider">
-                                Cách B: Nhập Thứ Hạng Thủ Công
+                                CÃ¡ch B: Nháº­p Thá»© Háº¡ng Thá»§ CÃ´ng
                               </span>
                               <form
                                 onSubmit={handleManualScoreSubmit}
@@ -1127,11 +1121,11 @@ export default function AdminClient({
                                         }
                                         className="bg-white/[0.03] border border-white/[0.08] rounded px-2 py-1 text-zinc-200 outline-none focus:border-violet-500/50 cursor-pointer"
                                       >
-                                        <option value="">Hạng...</option>
+                                        <option value="">Háº¡ng...</option>
                                         {[1, 2, 3, 4, 5, 6, 7, 8].map(
                                           (n) => (
                                             <option key={n} value={n}>
-                                              Top {n} ({9 - n}đ)
+                                              Top {n} ({9 - n}Ä‘)
                                             </option>
                                           )
                                         )}
@@ -1145,8 +1139,8 @@ export default function AdminClient({
                                   className="w-full py-2.5 bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-500 hover:to-violet-400 text-white font-bold text-xs rounded-lg transition-all cursor-pointer"
                                 >
                                   {isSubmittingScore
-                                    ? "Đang lưu..."
-                                    : "Lưu Kết Quả & Cập Nhật BXH"}
+                                    ? "Äang lÆ°u..."
+                                    : "LÆ°u Káº¿t Quáº£ & Cáº­p Nháº­t BXH"}
                                 </button>
                               </form>
                             </div>
@@ -1158,10 +1152,10 @@ export default function AdminClient({
                     <div className="glass-card p-4 border-rose-500/20 flex flex-col gap-3">
                       <span className="text-[10px] font-bold text-rose-400 font-mono uppercase tracking-wider flex items-center gap-1">
                         <Undo2 className="w-3 h-3" />
-                        Undo Điểm Trận Đấu
+                        Undo Äiá»ƒm Tráº­n Äáº¥u
                       </span>
                       <p className="text-[11px] text-zinc-500 font-mono">
-                        Xóa kết quả một trận đã tính sai.
+                        XÃ³a káº¿t quáº£ má»™t tráº­n Ä‘Ã£ tÃ­nh sai.
                       </p>
                       <div className="flex gap-2">
                         <input
@@ -1176,7 +1170,7 @@ export default function AdminClient({
                           disabled={isUndoing || !undoMatchId.trim()}
                           className="px-4 py-2 bg-rose-500/10 text-rose-400 border border-rose-500/20 rounded-lg text-xs font-mono font-bold hover:bg-rose-500/20 transition-colors cursor-pointer disabled:opacity-50"
                         >
-                          {isUndoing ? "Đang undo..." : "Undo"}
+                          {isUndoing ? "Äang undo..." : "Undo"}
                         </button>
                       </div>
                     </div>
@@ -1191,7 +1185,7 @@ export default function AdminClient({
                         <div className="p-4 border-b border-white/[0.06]">
                           <h4 className="text-sm font-mono font-bold text-zinc-200 flex items-center gap-2">
                             <History className="w-4 h-4 text-violet-400" />
-                            Kết Quả Trận Đấu (
+                            Káº¿t Quáº£ Tráº­n Äáº¥u (
                             {tournamentMatchResults.length})
                           </h4>
                         </div>
@@ -1214,7 +1208,7 @@ export default function AdminClient({
                                       {mr.match_id}
                                     </span>
                                     <span className="text-[10px] text-zinc-500 font-mono">
-                                      {lobby?.name || "N/A"} •{" "}
+                                      {lobby?.name || "N/A"} â€¢{" "}
                                       {new Date(
                                         mr.created_at
                                       ).toLocaleString("vi-VN")}
@@ -1253,7 +1247,7 @@ export default function AdminClient({
                                           )}
                                         >
                                           #{p.placement} {p.riot_id} (+
-                                          {p.points}đ)
+                                          {p.points}Ä‘)
                                         </span>
                                       ))}
                                   </div>
@@ -1265,7 +1259,7 @@ export default function AdminClient({
                       </div>
                     ) : (
                       <div className="glass-card p-10 text-center text-zinc-500 text-xs font-mono">
-                        Chưa có kết quả trận đấu nào.
+                        ChÆ°a cÃ³ káº¿t quáº£ tráº­n Ä‘áº¥u nÃ o.
                       </div>
                     )}
                   </div>
@@ -1288,7 +1282,7 @@ export default function AdminClient({
                     <div className="glass-card p-5">
                       <h4 className="text-sm font-mono font-bold text-cyan-400 uppercase mb-4 flex items-center gap-2">
                         <Plus className="w-4 h-4" />
-                        Tạo Vật Phẩm Mới
+                        Táº¡o Váº­t Pháº©m Má»›i
                       </h4>
                       <form
                         onSubmit={handleCreateShopItem}
@@ -1297,20 +1291,20 @@ export default function AdminClient({
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                           <div className="flex flex-col gap-1">
                             <label className="text-[10px] text-zinc-500 font-mono uppercase font-bold">
-                              Tên vật phẩm
+                              TÃªn váº­t pháº©m
                             </label>
                             <input
                               type="text"
                               value={newItemName}
                               onChange={(e) => setNewItemName(e.target.value)}
-                              placeholder="Tên..."
+                              placeholder="TÃªn..."
                               required
                               className="bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2 text-sm font-mono text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:border-violet-500/50"
                             />
                           </div>
                           <div className="flex flex-col gap-1">
                             <label className="text-[10px] text-zinc-500 font-mono uppercase font-bold">
-                              Giá (kim cương)
+                              GiÃ¡ (kim cÆ°Æ¡ng)
                             </label>
                             <input
                               type="number"
@@ -1327,30 +1321,30 @@ export default function AdminClient({
                         </div>
                         <div className="flex flex-col gap-1">
                           <label className="text-[10px] text-zinc-500 font-mono uppercase font-bold">
-                            Mô tả
+                            MÃ´ táº£
                           </label>
                           <input
                             type="text"
                             value={newItemDesc}
                             onChange={(e) => setNewItemDesc(e.target.value)}
-                            placeholder="Mô tả..."
+                            placeholder="MÃ´ táº£..."
                             className="bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2 text-sm font-mono text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:border-violet-500/50"
                           />
                         </div>
                         <div className="flex flex-col gap-1">
                           <label className="text-[10px] text-zinc-500 font-mono uppercase font-bold">
-                            Loại
+                            Loáº¡i
                           </label>
                           <select
                             value={newItemType}
                             onChange={(e) => setNewItemType(e.target.value)}
                             className="bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2 text-sm font-mono text-zinc-200 focus:outline-none focus:border-violet-500/50 cursor-pointer"
                           >
-                            <option value="badge">🏅 Huy Hiệu</option>
+                            <option value="badge">ðŸ… Huy Hiá»‡u</option>
                             <option value="discord_role">
-                              🎭 Discord Role
+                              ðŸŽ­ Discord Role
                             </option>
-                            <option value="custom_title">✨ Danh Hiệu</option>
+                            <option value="custom_title">âœ¨ Danh Hiá»‡u</option>
                           </select>
                         </div>
                         <button
@@ -1358,7 +1352,7 @@ export default function AdminClient({
                           disabled={isCreatingItem || !newItemName.trim()}
                           className="w-full py-2 bg-gradient-to-r from-cyan-600 to-cyan-500 hover:from-cyan-500 hover:to-cyan-400 text-white font-semibold rounded-lg transition-all cursor-pointer disabled:opacity-50 text-sm"
                         >
-                          {isCreatingItem ? "Đang tạo..." : "Tạo Vật Phẩm"}
+                          {isCreatingItem ? "Äang táº¡o..." : "Táº¡o Váº­t Pháº©m"}
                         </button>
                       </form>
                     </div>
@@ -1367,7 +1361,7 @@ export default function AdminClient({
                       <div className="p-4 border-b border-white/[0.06]">
                         <h4 className="text-sm font-mono font-bold text-zinc-200 flex items-center gap-2">
                           <ShoppingBag className="w-4 h-4 text-cyan-400" />
-                          Vật Phẩm Trong Shop ({shopItems.length})
+                          Váº­t Pháº©m Trong Shop ({shopItems.length})
                         </h4>
                       </div>
                       {shopItems.length > 0 ? (
@@ -1381,10 +1375,10 @@ export default function AdminClient({
                                 <div className="flex items-center gap-2">
                                   <span className="text-lg">
                                     {item.item_type === "discord_role"
-                                      ? "🎭"
+                                      ? "ðŸŽ­"
                                       : item.item_type === "badge"
-                                      ? "🏅"
-                                      : "✨"}
+                                      ? "ðŸ…"
+                                      : "âœ¨"}
                                   </span>
                                   <span className="font-mono font-bold text-sm text-zinc-200">
                                     {item.name}
@@ -1407,8 +1401,8 @@ export default function AdminClient({
                                 )}
                                 <span className="text-[10px] text-zinc-600 font-mono">
                                   {item.stock !== null
-                                    ? `Còn: ${item.stock}`
-                                    : "Không giới hạn"}
+                                    ? `CÃ²n: ${item.stock}`
+                                    : "KhÃ´ng giá»›i háº¡n"}
                                 </span>
                               </div>
                               <span className="text-sm font-mono font-bold text-cyan-400 flex items-center gap-1">
@@ -1420,459 +1414,9 @@ export default function AdminClient({
                         </div>
                       ) : (
                         <div className="p-8 text-center text-zinc-500 text-xs font-mono">
-                          Chưa có vật phẩm.
+                          ChÆ°a cÃ³ váº­t pháº©m.
                         </div>
                       )}
-                    </div>
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="comps" className="mt-4">
-                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                    {/* Column 1: Form */}
-                    <div className="lg:col-span-7 flex flex-col gap-4">
-                      <div className="glass-card p-5">
-                        <h4 className="text-sm font-mono font-bold text-violet-400 uppercase mb-4 flex items-center gap-2">
-                          <Crown className="w-4 h-4" />
-                          {editingCompId ? "Chỉnh sửa đội hình" : "Tạo Đội Hình Mới"}
-                        </h4>
-                        <form onSubmit={handleCreateOrUpdateComp} className="flex flex-col gap-4">
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <div className="flex flex-col gap-1">
-                              <label className="text-[10px] text-zinc-500 font-mono uppercase font-bold">Tên đội hình</label>
-                              <input
-                                type="text"
-                                value={compName}
-                                onChange={(e) => setCompName(e.target.value)}
-                                placeholder="Diệu Thủ Annie..."
-                                required
-                                className="bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2 text-sm font-mono text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:border-violet-500/50"
-                              />
-                            </div>
-                            <div className="flex flex-col gap-1">
-                              <label className="text-[10px] text-zinc-500 font-mono uppercase font-bold">Tier</label>
-                              <select
-                                value={compTier}
-                                onChange={(e) => setCompTier(e.target.value)}
-                                className="bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2 text-sm font-mono text-zinc-200 focus:outline-none focus:border-violet-500/50 cursor-pointer"
-                              >
-                                <option value="S">🔥 Tier S</option>
-                                <option value="A">⭐ Tier A</option>
-                                <option value="B">⚡ Tier B</option>
-                                <option value="C">❄️ Tier C</option>
-                              </select>
-                            </div>
-                          </div>
-
-                          <div className="flex flex-col gap-1">
-                            <label className="text-[10px] text-zinc-500 font-mono uppercase font-bold">Mô tả lối chơi</label>
-                            <textarea
-                              value={compDescription}
-                              onChange={(e) => setCompDescription(e.target.value)}
-                              placeholder="Slowroll Annie 3 sao ở cấp 5..."
-                              rows={2}
-                              className="bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2 text-sm font-mono text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:border-violet-500/50"
-                            />
-                          </div>
-
-                          {/* Image upload */}
-                          <div className="flex flex-col gap-1">
-                            <label className="text-[10px] text-zinc-500 font-mono uppercase font-bold">Ảnh Cover (Upload)</label>
-                            <div className="flex items-center gap-3">
-                              <input
-                                type="file"
-                                accept="image/*"
-                                onChange={handleImageUpload}
-                                className="hidden"
-                                id="comp-image-upload"
-                                disabled={uploadingImage}
-                              />
-                              <label
-                                htmlFor="comp-image-upload"
-                                className="px-4 py-2 bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.08] rounded-lg text-xs font-mono font-bold text-zinc-300 transition-colors cursor-pointer flex items-center gap-2"
-                              >
-                                {uploadingImage ? "Đang tải lên..." : "Chọn ảnh từ máy..."}
-                              </label>
-                              {compCoverImageUrl && (
-                                <span className="text-[10px] text-green-400 font-mono line-clamp-1 flex-1">
-                                  ✅ Đã có ảnh cover
-                                </span>
-                              )}
-                            </div>
-                            {compCoverImageUrl && (
-                              <div className="mt-2 border border-white/[0.08] rounded-lg overflow-hidden max-h-[120px]">
-                                <img src={compCoverImageUrl} alt="Preview" className="w-full h-full object-cover" />
-                              </div>
-                            )}
-                          </div>
-
-                          {/* Carry option dropdown */}
-                          <div className="flex flex-col gap-1">
-                            <label className="text-[10px] text-zinc-500 font-mono uppercase font-bold">Tướng Carry chính</label>
-                            <select
-                              value={compCarryApiName}
-                              onChange={(e) => setCompCarryApiName(e.target.value)}
-                              className="bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2 text-sm font-mono text-zinc-200 focus:outline-none focus:border-violet-500/50 cursor-pointer"
-                            >
-                              <option value="">-- Chọn tướng carry chính --</option>
-                              {tftData.champions.map((c: any) => (
-                                <option key={c.apiName} value={c.apiName}>{c.name}</option>
-                              ))}
-                            </select>
-                          </div>
-
-                          {/* Grid champions selector */}
-                          <div className="flex flex-col gap-1 border-t border-white/[0.06] pt-3">
-                            <label className="text-[10px] text-zinc-400 font-mono uppercase font-bold mb-2">Chọn Tướng Cho Đội Hình</label>
-                            <div className="grid grid-cols-6 sm:grid-cols-8 gap-2 max-h-[180px] overflow-y-auto p-1 bg-black/20 rounded-lg border border-white/[0.04]">
-                              {tftData.champions.map((c: any) => {
-                                const isSelected = compUnits.some(u => u.apiName === c.apiName);
-                                return (
-                                  <button
-                                    key={c.apiName}
-                                    type="button"
-                                    onClick={() => {
-                                      if (isSelected) {
-                                        setCompUnits(compUnits.filter(u => u.apiName !== c.apiName));
-                                      } else {
-                                        setCompUnits([...compUnits, { apiName: c.apiName, name: c.name, isCarry: false, isFlex: false, items: [] }]);
-                                      }
-                                    }}
-                                    title={c.name}
-                                    className={cn(
-                                      "relative flex items-center justify-center p-1 rounded border transition-all hover:scale-105 aspect-square",
-                                      isSelected 
-                                        ? "border-violet-500 bg-violet-500/20" 
-                                        : "border-white/[0.06] bg-white/[0.01] grayscale hover:grayscale-0"
-                                    )}
-                                  >
-                                    {c.image ? (
-                                      <img src={c.image} alt={c.name} className="w-full h-full object-cover rounded" />
-                                    ) : (
-                                      <span className="text-[8px] line-clamp-1">{c.name}</span>
-                                    )}
-                                  </button>
-                                );
-                              })}
-                            </div>
-                          </div>
-
-                          {/* Selected Champions settings */}
-                          {compUnits.length > 0 && (
-                            <div className="flex flex-col gap-2 bg-white/[0.01] border border-white/[0.04] rounded-lg p-3">
-                              <span className="text-[10px] text-zinc-500 font-mono uppercase font-bold">Cấu hình tướng đã chọn:</span>
-                              <div className="flex flex-col gap-2 max-h-[220px] overflow-y-auto">
-                                {compUnits.map((u, uIdx) => {
-                                  const champData = tftData.champions.find((c: any) => c.apiName === u.apiName);
-                                  return (
-                                    <div key={u.apiName} className="flex flex-col gap-2 p-2 bg-black/20 border border-white/[0.04] rounded bg-white/[0.02]">
-                                      <div className="flex items-center justify-between">
-                                        <div className="flex items-center gap-2">
-                                          {champData?.image && (
-                                            <img src={champData.image} alt={u.name} className="w-5 h-5 object-cover rounded" />
-                                          )}
-                                          <span className="text-xs font-bold font-mono text-zinc-300">{u.name}</span>
-                                        </div>
-                                        <div className="flex items-center gap-3">
-                                          <label className="flex items-center gap-1 text-[10px] text-zinc-400 font-mono cursor-pointer">
-                                            <input
-                                              type="checkbox"
-                                              checked={u.isCarry}
-                                              onChange={(e) => {
-                                                const updated = [...compUnits];
-                                                updated[uIdx].isCarry = e.target.checked;
-                                                setCompUnits(updated);
-                                              }}
-                                            />
-                                            👑 Carry
-                                          </label>
-                                          <label className="flex items-center gap-1 text-[10px] text-zinc-400 font-mono cursor-pointer">
-                                            <input
-                                              type="checkbox"
-                                              checked={u.isFlex}
-                                              onChange={(e) => {
-                                                const updated = [...compUnits];
-                                                updated[uIdx].isFlex = e.target.checked;
-                                                setCompUnits(updated);
-                                              }}
-                                            />
-                                            🔄 Flex
-                                          </label>
-                                        </div>
-                                      </div>
-
-                                      {/* Item selects */}
-                                      <div className="grid grid-cols-3 gap-2">
-                                        {[0, 1, 2].map((slotIdx) => (
-                                          <select
-                                            key={slotIdx}
-                                            value={u.items[slotIdx] || ""}
-                                            onChange={(e) => {
-                                              const updated = [...compUnits];
-                                              const items = [...(u.items || [])];
-                                              if (e.target.value) {
-                                                items[slotIdx] = e.target.value;
-                                              } else {
-                                                items.splice(slotIdx, 1);
-                                              }
-                                              updated[uIdx].items = items.filter(Boolean);
-                                              setCompUnits(updated);
-                                            }}
-                                            className="bg-white/[0.03] border border-white/[0.08] rounded p-1 text-[10px] font-mono text-zinc-300 focus:outline-none"
-                                          >
-                                            <option value="">Trang bị {slotIdx + 1}</option>
-                                            {tftData.items.map((item: any) => (
-                                              <option key={item.apiName} value={item.apiName}>{item.name}</option>
-                                            ))}
-                                          </select>
-                                        ))}
-                                      </div>
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            </div>
-                          )}
-
-                          {/* Traits management */}
-                          <div className="flex flex-col gap-1 border-t border-white/[0.06] pt-3">
-                            <label className="text-[10px] text-zinc-400 font-mono uppercase font-bold">Kích Hoạt Tộc / Hệ</label>
-                            <div className="flex flex-wrap gap-2 mb-2">
-                              {compTraits.map((trait, tIdx) => (
-                                <div key={trait.apiName} className="flex items-center gap-1 px-2 py-1 bg-violet-500/10 border border-violet-500/20 text-violet-400 font-mono text-[10px] font-bold rounded">
-                                  <span>{trait.name} ({trait.count})</span>
-                                  <button
-                                    type="button"
-                                    onClick={() => setCompTraits(compTraits.filter(t => t.apiName !== trait.apiName))}
-                                    className="hover:text-rose-400 cursor-pointer ml-1"
-                                  >
-                                    ✕
-                                  </button>
-                                </div>
-                              ))}
-                            </div>
-                            <div className="grid grid-cols-2 gap-2">
-                              <select
-                                onChange={(e) => {
-                                  if (!e.target.value) return;
-                                  const selectedTrait = tftData.traits.find((t: any) => t.apiName === e.target.value);
-                                  if (selectedTrait && !compTraits.some(t => t.apiName === e.target.value)) {
-                                    setCompTraits([...compTraits, { apiName: selectedTrait.apiName, name: selectedTrait.name, count: 2 }]);
-                                  }
-                                  e.target.value = "";
-                                }}
-                                className="bg-white/[0.03] border border-white/[0.08] rounded-lg p-2 text-xs font-mono text-zinc-300 cursor-pointer"
-                              >
-                                <option value="">+ Thêm tộc/hệ...</option>
-                                {tftData.traits.map((t: any) => (
-                                  <option key={t.apiName} value={t.apiName}>{t.name}</option>
-                                ))}
-                              </select>
-                              {compTraits.length > 0 && (
-                                <div className="flex flex-col gap-1 max-h-[120px] overflow-y-auto">
-                                  {compTraits.map((t, idx) => (
-                                    <div key={t.apiName} className="flex items-center justify-between gap-2 p-1 bg-black/10 rounded">
-                                      <span className="text-[10px] font-mono text-zinc-400">{t.name}</span>
-                                      <input
-                                        type="number"
-                                        value={t.count}
-                                        onChange={(e) => {
-                                          const updated = [...compTraits];
-                                          updated[idx].count = Math.max(1, Number(e.target.value));
-                                          setCompTraits(updated);
-                                        }}
-                                        className="w-12 bg-white/[0.03] border border-white/[0.08] rounded p-0.5 text-center text-[10px] font-mono text-zinc-200"
-                                      />
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
-                            </div>
-                          </div>
-
-                          {/* Augments management */}
-                          <div className="flex flex-col gap-1 border-t border-white/[0.06] pt-3">
-                            <label className="text-[10px] text-zinc-400 font-mono uppercase font-bold">Lõi Công Nghệ Khuyên Dùng (Ưu Tiên)</label>
-                            <div className="flex flex-wrap gap-2 mb-2">
-                              {compAugments.map((a, aIdx) => (
-                                <div key={aIdx} className="flex items-center gap-1 px-2 py-1 bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 font-mono text-[10px] font-bold rounded">
-                                  <span>{a.name}</span>
-                                  <button
-                                    type="button"
-                                    onClick={() => setCompAugments(compAugments.filter((_, i) => i !== aIdx))}
-                                    className="hover:text-rose-400 cursor-pointer ml-1"
-                                  >
-                                    ✕
-                                  </button>
-                                </div>
-                              ))}
-                            </div>
-                            <input
-                              type="text"
-                              placeholder="Nhập tên lõi và ấn Enter..."
-                              onKeyDown={(e) => {
-                                if (e.key === "Enter") {
-                                  e.preventDefault();
-                                  const val = e.currentTarget.value.trim();
-                                  if (val) {
-                                    setCompAugments([...compAugments, { name: val }]);
-                                    e.currentTarget.value = "";
-                                  }
-                                }
-                              }}
-                              className="bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2 text-xs font-mono text-zinc-200 placeholder:text-zinc-600 focus:outline-none"
-                            />
-                          </div>
-
-                          {/* Early units */}
-                          <div className="flex flex-col gap-1 border-t border-white/[0.06] pt-3">
-                            <label className="text-[10px] text-zinc-400 font-mono uppercase font-bold">Đội Hình Đầu Trận</label>
-                            <div className="flex flex-wrap gap-2 mb-2">
-                              {compEarlyUnits.map((u, uIdx) => (
-                                <div key={uIdx} className="flex items-center gap-1 px-2 py-1 bg-amber-500/10 border border-amber-500/20 text-amber-400 font-mono text-[10px] font-bold rounded">
-                                  <span>{u.name}</span>
-                                  <button
-                                    type="button"
-                                    onClick={() => setCompEarlyUnits(compEarlyUnits.filter((_, i) => i !== uIdx))}
-                                    className="hover:text-rose-400 cursor-pointer ml-1"
-                                  >
-                                    ✕
-                                  </button>
-                                </div>
-                              ))}
-                            </div>
-                            <select
-                              onChange={(e) => {
-                                if (!e.target.value) return;
-                                const champData = tftData.champions.find((c: any) => c.apiName === e.target.value);
-                                if (champData && !compEarlyUnits.some(u => u.apiName === e.target.value)) {
-                                  setCompEarlyUnits([...compEarlyUnits, { apiName: champData.apiName, name: champData.name }]);
-                                }
-                                e.target.value = "";
-                              }}
-                              className="bg-white/[0.03] border border-white/[0.08] rounded-lg p-2 text-xs font-mono text-zinc-300 cursor-pointer"
-                            >
-                              <option value="">+ Thêm tướng đầu trận...</option>
-                              {tftData.champions.map((c: any) => (
-                                <option key={c.apiName} value={c.apiName}>{c.name}</option>
-                              ))}
-                            </select>
-                          </div>
-
-                          <div className="flex gap-3 pt-4 border-t border-white/[0.06]">
-                            <button
-                              type="submit"
-                              disabled={isSubmittingComp || !compName.trim()}
-                              className="flex-1 py-2.5 bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-500 hover:to-violet-400 text-white font-semibold rounded-lg transition-all cursor-pointer disabled:opacity-50 text-sm"
-                            >
-                              {isSubmittingComp ? "Đang xử lý..." : editingCompId ? "Cập Nhật Đội Hình" : "Tạo Đội Hình"}
-                            </button>
-                            {editingCompId && (
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  setEditingCompId(null);
-                                  setCompName("");
-                                  setCompDescription("");
-                                  setCompTier("A");
-                                  setCompCarryApiName("");
-                                  setCompCoverImageUrl("");
-                                  setCompUnits([]);
-                                  setCompTraits([]);
-                                  setCompAugments([]);
-                                  setCompEarlyUnits([]);
-                                }}
-                                className="px-4 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-semibold rounded-lg transition-colors cursor-pointer text-sm"
-                              >
-                                Hủy
-                              </button>
-                            )}
-                          </div>
-                        </form>
-                      </div>
-                    </div>
-
-                    {/* Column 2: Listing */}
-                    <div className="lg:col-span-5 flex flex-col gap-4">
-                      <div className="glass-card overflow-hidden">
-                        <div className="p-4 border-b border-white/[0.06]">
-                          <h4 className="text-sm font-mono font-bold text-zinc-200 flex items-center gap-2">
-                            <Crown className="w-4 h-4 text-violet-400" />
-                            Đội Hình Hot TFT ({comps.length})
-                          </h4>
-                        </div>
-                        {comps.length > 0 ? (
-                          <div className="divide-y divide-white/[0.03] max-h-[800px] overflow-y-auto">
-                            {comps.map((c) => {
-                              const carryInfo = tftData.champions.find((champ: any) => champ.apiName === c.carry_api_name);
-                              return (
-                                <div key={c.id} className="p-4 hover:bg-white/[0.02] transition-colors flex flex-col gap-3">
-                                  <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                      <span className={cn(
-                                        "text-[9px] font-mono px-2 py-0.5 rounded font-bold border",
-                                        c.tier === "S" 
-                                          ? "bg-amber-500/10 text-amber-400 border-amber-500/20"
-                                          : c.tier === "A"
-                                          ? "bg-blue-500/10 text-blue-400 border-blue-500/20"
-                                          : c.tier === "B"
-                                          ? "bg-zinc-300/10 text-zinc-300 border-zinc-300/20"
-                                          : "bg-zinc-500/10 text-zinc-500 border-zinc-500/20"
-                                      )}>
-                                        Tier {c.tier}
-                                      </span>
-                                      <span className="font-bold text-sm text-zinc-200 font-mono">{c.name}</span>
-                                    </div>
-                                    <span className={cn(
-                                      "text-[9px] font-mono px-1.5 py-0.5 rounded font-bold",
-                                      c.is_active ? "bg-green-500/10 text-green-400" : "bg-rose-500/10 text-rose-400"
-                                    )}>
-                                      {c.is_active ? "ACTIVE" : "HIDDEN"}
-                                    </span>
-                                  </div>
-
-                                  <div className="flex items-center gap-2 text-xs font-mono text-zinc-500">
-                                    {carryInfo?.image && (
-                                      <img src={carryInfo.image} alt={carryInfo.name} className="w-4 h-4 object-cover rounded" />
-                                    )}
-                                    <span>Carry: {carryInfo?.name || c.carry_api_name || "N/A"}</span>
-                                  </div>
-
-                                  <div className="flex gap-2">
-                                    <button
-                                      onClick={() => handleEditCompClick(c)}
-                                      className="px-2 py-1 bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.08] rounded text-[10px] font-mono font-bold text-zinc-300 transition-colors cursor-pointer"
-                                    >
-                                      Sửa
-                                    </button>
-                                    <button
-                                      onClick={() => handleToggleCompActive(c.id, c.is_active)}
-                                      className={cn(
-                                        "px-2 py-1 border rounded text-[10px] font-mono font-bold transition-colors cursor-pointer",
-                                        c.is_active 
-                                          ? "bg-rose-500/10 text-rose-400 border-rose-500/20 hover:bg-rose-500/20" 
-                                          : "bg-green-500/10 text-green-400 border-green-500/20 hover:bg-green-500/20"
-                                      )}
-                                    >
-                                      {c.is_active ? "Ẩn" : "Hiện"}
-                                    </button>
-                                    <button
-                                      onClick={() => handleDeleteComp(c.id, c.name)}
-                                      className="px-2 py-1 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 rounded text-[10px] font-mono font-bold text-rose-400 transition-colors cursor-pointer"
-                                    >
-                                      Xóa
-                                    </button>
-                                  </div>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        ) : (
-                          <div className="p-8 text-center text-zinc-500 text-xs font-mono">
-                            Chưa có đội hình nào.
-                          </div>
-                        )}
-                      </div>
                     </div>
                   </div>
                 </TabsContent>
@@ -1881,9 +1425,464 @@ export default function AdminClient({
           ) : (
             <div className="glass-card p-12 text-center text-zinc-500 text-xs font-mono flex flex-col items-center gap-3">
               <Gamepad2 className="w-8 h-8 text-zinc-600" />
-              ← Chọn hoặc tạo một giải đấu ở bảng bên trái để bắt đầu.
+              â† Chá»n hoáº·c táº¡o má»™t giáº£i Ä‘áº¥u á»Ÿ báº£ng bÃªn trÃ¡i Ä‘á»ƒ báº¯t Ä‘áº§u.
             </div>
           )}
+        </div>
+      </section>
+
+      {/* ===== COMPS SECTION (always visible) ===== */}
+      <section className="flex flex-col gap-4">
+        <div className="flex items-center gap-3">
+          <Crown className="w-4 h-4 text-violet-400" />
+          <h2 className="text-sm font-mono font-bold text-violet-400 uppercase tracking-widest">Quáº£n LÃ½ Äá»™i HÃ¬nh Hot TFT</h2>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          {/* Column 1: Form */}
+          <div className="lg:col-span-7 flex flex-col gap-4">
+            <div className="glass-card p-5">
+              <h4 className="text-sm font-mono font-bold text-violet-400 uppercase mb-4 flex items-center gap-2">
+                <Crown className="w-4 h-4" />
+                {editingCompId ? "Chá»‰nh sá»­a Ä‘á»™i hÃ¬nh" : "Táº¡o Äá»™i HÃ¬nh Má»›i"}
+              </h4>
+              <form onSubmit={handleCreateOrUpdateComp} className="flex flex-col gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[10px] text-zinc-500 font-mono uppercase font-bold">TÃªn Ä‘á»™i hÃ¬nh</label>
+                    <input
+                      type="text"
+                      value={compName}
+                      onChange={(e) => setCompName(e.target.value)}
+                      placeholder="Diá»‡u Thá»§ Annie..."
+                      required
+                      className="bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2 text-sm font-mono text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:border-violet-500/50"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-[10px] text-zinc-500 font-mono uppercase font-bold">Tier</label>
+                    <select
+                      value={compTier}
+                      onChange={(e) => setCompTier(e.target.value)}
+                      className="bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2 text-sm font-mono text-zinc-200 focus:outline-none focus:border-violet-500/50 cursor-pointer"
+                    >
+                      <option value="S">ðŸ”¥ Tier S</option>
+                      <option value="A">â­ Tier A</option>
+                      <option value="B">âš¡ Tier B</option>
+                      <option value="C">â„ï¸ Tier C</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <label className="text-[10px] text-zinc-500 font-mono uppercase font-bold">MÃ´ táº£ lá»‘i chÆ¡i</label>
+                  <textarea
+                    value={compDescription}
+                    onChange={(e) => setCompDescription(e.target.value)}
+                    placeholder="Slowroll Annie 3 sao á»Ÿ cáº¥p 5..."
+                    rows={2}
+                    className="bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2 text-sm font-mono text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:border-violet-500/50"
+                  />
+                </div>
+
+                {/* Image upload */}
+                <div className="flex flex-col gap-1">
+                  <label className="text-[10px] text-zinc-500 font-mono uppercase font-bold">áº¢nh Cover (Upload)</label>
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="hidden"
+                      id="comp-image-upload"
+                      disabled={uploadingImage}
+                    />
+                    <label
+                      htmlFor="comp-image-upload"
+                      className="px-4 py-2 bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.08] rounded-lg text-xs font-mono font-bold text-zinc-300 transition-colors cursor-pointer flex items-center gap-2"
+                    >
+                      {uploadingImage ? "Äang táº£i lÃªn..." : "Chá»n áº£nh tá»« mÃ¡y..."}
+                    </label>
+                    {compCoverImageUrl && (
+                      <span className="text-[10px] text-green-400 font-mono line-clamp-1 flex-1">
+                        âœ… ÄÃ£ cÃ³ áº£nh cover
+                      </span>
+                    )}
+                  </div>
+                  {compCoverImageUrl && (
+                    <div className="mt-2 border border-white/[0.08] rounded-lg overflow-hidden max-h-[120px]">
+                      <img src={compCoverImageUrl} alt="Preview" className="w-full h-full object-cover" />
+                    </div>
+                  )}
+                </div>
+
+                {/* Carry option dropdown */}
+                <div className="flex flex-col gap-1">
+                  <label className="text-[10px] text-zinc-500 font-mono uppercase font-bold">TÆ°á»›ng Carry chÃ­nh</label>
+                  <select
+                    value={compCarryApiName}
+                    onChange={(e) => setCompCarryApiName(e.target.value)}
+                    className="bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2 text-sm font-mono text-zinc-200 focus:outline-none focus:border-violet-500/50 cursor-pointer"
+                  >
+                    <option value="">-- Chá»n tÆ°á»›ng carry chÃ­nh --</option>
+                    {tftData.champions.map((c: any) => (
+                      <option key={c.apiName} value={c.apiName}>{c.name}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Grid champions selector */}
+                <div className="flex flex-col gap-1 border-t border-white/[0.06] pt-3">
+                  <label className="text-[10px] text-zinc-400 font-mono uppercase font-bold mb-2">Chá»n TÆ°á»›ng Cho Äá»™i HÃ¬nh</label>
+                  <div className="grid grid-cols-6 sm:grid-cols-8 gap-2 max-h-[180px] overflow-y-auto p-1 bg-black/20 rounded-lg border border-white/[0.04]">
+                    {tftData.champions.map((c: any) => {
+                      const isSelected = compUnits.some(u => u.apiName === c.apiName);
+                      return (
+                        <button
+                          key={c.apiName}
+                          type="button"
+                          onClick={() => {
+                            if (isSelected) {
+                              setCompUnits(compUnits.filter(u => u.apiName !== c.apiName));
+                            } else {
+                              setCompUnits([...compUnits, { apiName: c.apiName, name: c.name, isCarry: false, isFlex: false, items: [] }]);
+                            }
+                          }}
+                          title={c.name}
+                          className={cn(
+                            "relative flex items-center justify-center p-1 rounded border transition-all hover:scale-105 aspect-square",
+                            isSelected
+                              ? "border-violet-500 bg-violet-500/20"
+                              : "border-white/[0.06] bg-white/[0.01] grayscale hover:grayscale-0"
+                          )}
+                        >
+                          {c.image ? (
+                            <img src={c.image} alt={c.name} className="w-full h-full object-cover rounded" />
+                          ) : (
+                            <span className="text-[8px] line-clamp-1">{c.name}</span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Selected Champions settings */}
+                {compUnits.length > 0 && (
+                  <div className="flex flex-col gap-2 bg-white/[0.01] border border-white/[0.04] rounded-lg p-3">
+                    <span className="text-[10px] text-zinc-500 font-mono uppercase font-bold">Cáº¥u hÃ¬nh tÆ°á»›ng Ä‘Ã£ chá»n:</span>
+                    <div className="flex flex-col gap-2 max-h-[220px] overflow-y-auto">
+                      {compUnits.map((u, uIdx) => {
+                        const champData = tftData.champions.find((c: any) => c.apiName === u.apiName);
+                        return (
+                          <div key={u.apiName} className="flex flex-col gap-2 p-2 bg-black/20 border border-white/[0.04] rounded bg-white/[0.02]">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                {champData?.image && (
+                                  <img src={champData.image} alt={u.name} className="w-5 h-5 object-cover rounded" />
+                                )}
+                                <span className="text-xs font-bold font-mono text-zinc-300">{u.name}</span>
+                              </div>
+                              <div className="flex items-center gap-3">
+                                <label className="flex items-center gap-1 text-[10px] text-zinc-400 font-mono cursor-pointer">
+                                  <input
+                                    type="checkbox"
+                                    checked={u.isCarry}
+                                    onChange={(e) => {
+                                      const updated = [...compUnits];
+                                      updated[uIdx].isCarry = e.target.checked;
+                                      setCompUnits(updated);
+                                    }}
+                                  />
+                                  ðŸ‘‘ Carry
+                                </label>
+                                <label className="flex items-center gap-1 text-[10px] text-zinc-400 font-mono cursor-pointer">
+                                  <input
+                                    type="checkbox"
+                                    checked={u.isFlex}
+                                    onChange={(e) => {
+                                      const updated = [...compUnits];
+                                      updated[uIdx].isFlex = e.target.checked;
+                                      setCompUnits(updated);
+                                    }}
+                                  />
+                                  ðŸ”„ Flex
+                                </label>
+                              </div>
+                            </div>
+
+                            {/* Item selects */}
+                            <div className="grid grid-cols-3 gap-2">
+                              {[0, 1, 2].map((slotIdx) => (
+                                <select
+                                  key={slotIdx}
+                                  value={u.items[slotIdx] || ""}
+                                  onChange={(e) => {
+                                    const updated = [...compUnits];
+                                    const items = [...(u.items || [])];
+                                    if (e.target.value) {
+                                      items[slotIdx] = e.target.value;
+                                    } else {
+                                      items.splice(slotIdx, 1);
+                                    }
+                                    updated[uIdx].items = items.filter(Boolean);
+                                    setCompUnits(updated);
+                                  }}
+                                  className="bg-white/[0.03] border border-white/[0.08] rounded p-1 text-[10px] font-mono text-zinc-300 focus:outline-none"
+                                >
+                                  <option value="">Trang bá»‹ {slotIdx + 1}</option>
+                                  {tftData.items.map((item: any) => (
+                                    <option key={item.apiName} value={item.apiName}>{item.name}</option>
+                                  ))}
+                                </select>
+                              ))}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Traits management */}
+                <div className="flex flex-col gap-1 border-t border-white/[0.06] pt-3">
+                  <label className="text-[10px] text-zinc-400 font-mono uppercase font-bold">KÃ­ch Hoáº¡t Tá»™c / Há»‡</label>
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    {compTraits.map((trait, tIdx) => (
+                      <div key={trait.apiName} className="flex items-center gap-1 px-2 py-1 bg-violet-500/10 border border-violet-500/20 text-violet-400 font-mono text-[10px] font-bold rounded">
+                        <span>{trait.name} ({trait.count})</span>
+                        <button
+                          type="button"
+                          onClick={() => setCompTraits(compTraits.filter(t => t.apiName !== trait.apiName))}
+                          className="hover:text-rose-400 cursor-pointer ml-1"
+                        >
+                          âœ•
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <select
+                      onChange={(e) => {
+                        if (!e.target.value) return;
+                        const selectedTrait = tftData.traits.find((t: any) => t.apiName === e.target.value);
+                        if (selectedTrait && !compTraits.some(t => t.apiName === e.target.value)) {
+                          setCompTraits([...compTraits, { apiName: selectedTrait.apiName, name: selectedTrait.name, count: 2 }]);
+                        }
+                        e.target.value = "";
+                      }}
+                      className="bg-white/[0.03] border border-white/[0.08] rounded-lg p-2 text-xs font-mono text-zinc-300 cursor-pointer"
+                    >
+                      <option value="">+ ThÃªm tá»™c/há»‡...</option>
+                      {tftData.traits.map((t: any) => (
+                        <option key={t.apiName} value={t.apiName}>{t.name}</option>
+                      ))}
+                    </select>
+                    {compTraits.length > 0 && (
+                      <div className="flex flex-col gap-1 max-h-[120px] overflow-y-auto">
+                        {compTraits.map((t, idx) => (
+                          <div key={t.apiName} className="flex items-center justify-between gap-2 p-1 bg-black/10 rounded">
+                            <span className="text-[10px] font-mono text-zinc-400">{t.name}</span>
+                            <input
+                              type="number"
+                              value={t.count}
+                              onChange={(e) => {
+                                const updated = [...compTraits];
+                                updated[idx].count = Math.max(1, Number(e.target.value));
+                                setCompTraits(updated);
+                              }}
+                              className="w-12 bg-white/[0.03] border border-white/[0.08] rounded p-0.5 text-center text-[10px] font-mono text-zinc-200"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Augments management */}
+                <div className="flex flex-col gap-1 border-t border-white/[0.06] pt-3">
+                  <label className="text-[10px] text-zinc-400 font-mono uppercase font-bold">LÃµi CÃ´ng Nghá»‡ KhuyÃªn DÃ¹ng (Æ¯u TiÃªn)</label>
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    {compAugments.map((a, aIdx) => (
+                      <div key={aIdx} className="flex items-center gap-1 px-2 py-1 bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 font-mono text-[10px] font-bold rounded">
+                        <span>{a.name}</span>
+                        <button
+                          type="button"
+                          onClick={() => setCompAugments(compAugments.filter((_, i) => i !== aIdx))}
+                          className="hover:text-rose-400 cursor-pointer ml-1"
+                        >
+                          âœ•
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Nháº­p tÃªn lÃµi vÃ  áº¥n Enter..."
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        const val = e.currentTarget.value.trim();
+                        if (val) {
+                          setCompAugments([...compAugments, { name: val }]);
+                          e.currentTarget.value = "";
+                        }
+                      }
+                    }}
+                    className="bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2 text-xs font-mono text-zinc-200 placeholder:text-zinc-600 focus:outline-none"
+                  />
+                </div>
+
+                {/* Early units */}
+                <div className="flex flex-col gap-1 border-t border-white/[0.06] pt-3">
+                  <label className="text-[10px] text-zinc-400 font-mono uppercase font-bold">Äá»™i HÃ¬nh Äáº§u Tráº­n</label>
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    {compEarlyUnits.map((u, uIdx) => (
+                      <div key={uIdx} className="flex items-center gap-1 px-2 py-1 bg-amber-500/10 border border-amber-500/20 text-amber-400 font-mono text-[10px] font-bold rounded">
+                        <span>{u.name}</span>
+                        <button
+                          type="button"
+                          onClick={() => setCompEarlyUnits(compEarlyUnits.filter((_, i) => i !== uIdx))}
+                          className="hover:text-rose-400 cursor-pointer ml-1"
+                        >
+                          âœ•
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                  <select
+                    onChange={(e) => {
+                      if (!e.target.value) return;
+                      const champData = tftData.champions.find((c: any) => c.apiName === e.target.value);
+                      if (champData && !compEarlyUnits.some(u => u.apiName === e.target.value)) {
+                        setCompEarlyUnits([...compEarlyUnits, { apiName: champData.apiName, name: champData.name }]);
+                      }
+                      e.target.value = "";
+                    }}
+                    className="bg-white/[0.03] border border-white/[0.08] rounded-lg p-2 text-xs font-mono text-zinc-300 cursor-pointer"
+                  >
+                    <option value="">+ ThÃªm tÆ°á»›ng Ä‘áº§u tráº­n...</option>
+                    {tftData.champions.map((c: any) => (
+                      <option key={c.apiName} value={c.apiName}>{c.name}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="flex gap-3 pt-4 border-t border-white/[0.06]">
+                  <button
+                    type="submit"
+                    disabled={isSubmittingComp || !compName.trim()}
+                    className="flex-1 py-2.5 bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-500 hover:to-violet-400 text-white font-semibold rounded-lg transition-all cursor-pointer disabled:opacity-50 text-sm"
+                  >
+                    {isSubmittingComp ? "Äang xá»­ lÃ½..." : editingCompId ? "Cáº­p Nháº­t Äá»™i HÃ¬nh" : "Táº¡o Äá»™i HÃ¬nh"}
+                  </button>
+                  {editingCompId && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setEditingCompId(null);
+                        setCompName("");
+                        setCompDescription("");
+                        setCompTier("A");
+                        setCompCarryApiName("");
+                        setCompCoverImageUrl("");
+                        setCompUnits([]);
+                        setCompTraits([]);
+                        setCompAugments([]);
+                        setCompEarlyUnits([]);
+                      }}
+                      className="px-4 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-semibold rounded-lg transition-colors cursor-pointer text-sm"
+                    >
+                      Há»§y
+                    </button>
+                  )}
+                </div>
+              </form>
+            </div>
+          </div>
+
+          {/* Column 2: Listing */}
+          <div className="lg:col-span-5 flex flex-col gap-4">
+            <div className="glass-card overflow-hidden">
+              <div className="p-4 border-b border-white/[0.06]">
+                <h4 className="text-sm font-mono font-bold text-zinc-200 flex items-center gap-2">
+                  <Crown className="w-4 h-4 text-violet-400" />
+                  Äá»™i HÃ¬nh Hot TFT ({comps.length})
+                </h4>
+              </div>
+              {comps.length > 0 ? (
+                <div className="divide-y divide-white/[0.03] max-h-[800px] overflow-y-auto">
+                  {comps.map((c) => {
+                    const carryInfo = tftData.champions.find((champ: any) => champ.apiName === c.carry_api_name);
+                    return (
+                      <div key={c.id} className="p-4 hover:bg-white/[0.02] transition-colors flex flex-col gap-3">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <span className={cn(
+                              "text-[9px] font-mono px-2 py-0.5 rounded font-bold border",
+                              c.tier === "S"
+                                ? "bg-amber-500/10 text-amber-400 border-amber-500/20"
+                                : c.tier === "A"
+                                ? "bg-blue-500/10 text-blue-400 border-blue-500/20"
+                                : c.tier === "B"
+                                ? "bg-zinc-300/10 text-zinc-300 border-zinc-300/20"
+                                : "bg-zinc-500/10 text-zinc-500 border-zinc-500/20"
+                            )}>
+                              Tier {c.tier}
+                            </span>
+                            <span className="font-bold text-sm text-zinc-200 font-mono">{c.name}</span>
+                          </div>
+                          <span className={cn(
+                            "text-[9px] font-mono px-1.5 py-0.5 rounded font-bold",
+                            c.is_active ? "bg-green-500/10 text-green-400" : "bg-rose-500/10 text-rose-400"
+                          )}>
+                            {c.is_active ? "ACTIVE" : "HIDDEN"}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-2 text-xs font-mono text-zinc-500">
+                          {carryInfo?.image && (
+                            <img src={carryInfo.image} alt={carryInfo.name} className="w-4 h-4 object-cover rounded" />
+                          )}
+                          <span>Carry: {carryInfo?.name || c.carry_api_name || "N/A"}</span>
+                        </div>
+
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => handleEditCompClick(c)}
+                            className="px-2 py-1 bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.08] rounded text-[10px] font-mono font-bold text-zinc-300 transition-colors cursor-pointer"
+                          >
+                            Sá»­a
+                          </button>
+                          <button
+                            onClick={() => handleToggleCompActive(c.id, c.is_active)}
+                            className={cn(
+                              "px-2 py-1 border rounded text-[10px] font-mono font-bold transition-colors cursor-pointer",
+                              c.is_active
+                                ? "bg-rose-500/10 text-rose-400 border-rose-500/20 hover:bg-rose-500/20"
+                                : "bg-green-500/10 text-green-400 border-green-500/20 hover:bg-green-500/20"
+                            )}
+                          >
+                            {c.is_active ? "áº¨n" : "Hiá»‡n"}
+                          </button>
+                          <button
+                            onClick={() => handleDeleteComp(c.id, c.name)}
+                            className="px-2 py-1 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 rounded text-[10px] font-mono font-bold text-rose-400 transition-colors cursor-pointer"
+                          >
+                            XÃ³a
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="p-8 text-center text-zinc-500 text-xs font-mono">
+                  ChÆ°a cÃ³ Ä‘á»™i hÃ¬nh nÃ o.
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </section>
     </div>
