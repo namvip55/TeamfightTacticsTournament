@@ -21,6 +21,7 @@ export default async function AdminPage() {
     { data: matchResults },
     { data: standings },
     { data: shopItems },
+    { data: comps },
     playerSession
   ] = await Promise.all([
     supabase.from("tournaments").select("*").order("created_at", { ascending: false }),
@@ -29,6 +30,7 @@ export default async function AdminPage() {
     supabase.from("match_results").select("*").order("created_at", { ascending: false }),
     supabase.from("standings").select("*").order("total_points", { ascending: false }),
     supabase.from("shop_items").select("*").order("created_at", { ascending: false }),
+    supabase.from("tft_comps").select("*").order("created_at", { ascending: false }),
     getPlayerSession()
   ]);
 
@@ -53,6 +55,7 @@ export default async function AdminPage() {
           matchResults={matchResults || []}
           standings={standings || []}
           shopItems={shopItems || []}
+          comps={comps || []}
         />
       </div>
     </Sidebar>

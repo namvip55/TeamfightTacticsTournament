@@ -32,7 +32,15 @@ export default function RootLayout({
   return (
     <html lang="vi" className={`${interSans.variable} dark`}>
       <body className="min-h-screen bg-[#0a0a0f] text-[#e4e4e7] font-sans antialiased">
-        <TooltipProvider delayDuration={200}>{children}</TooltipProvider>
+        <TooltipProvider delayDuration={200}>
+          {children}
+          <footer className="mt-auto border-t border-white/[0.04] py-4 px-6 text-center">
+            <p className="text-[10px] text-zinc-600 font-mono leading-relaxed max-w-3xl mx-auto">
+              TFT Tournaments không được chứng thực bởi Riot Games và không phản ánh quan điểm hay ý kiến của Riot Games hoặc bất kỳ ai tham gia chính thức vào việc sản xuất hay quản lý Riot Games.
+              Riot Games và mọi tài sản liên quan là thương hiệu hoặc thương hiệu đã đăng ký của Riot Games, Inc.
+            </p>
+          </footer>
+        </TooltipProvider>
       </body>
     </html>
   );

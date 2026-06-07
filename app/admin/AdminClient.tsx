@@ -18,6 +18,14 @@ import {
   addLobbyAction,
 } from "../lib/actions";
 import { createShopItemAction } from "../lib/player-actions";
+import {
+  createCompAction,
+  updateCompAction,
+  deleteCompAction,
+  toggleCompAction,
+  uploadCompImageAction,
+} from "../lib/comp-actions";
+import tftData from "../data/tft-set17.json";
 import AwardDiamonds from "./AwardDiamonds";
 import {
   Shield,
@@ -110,6 +118,39 @@ interface ShopItem {
   active: boolean;
 }
 
+interface Comp {
+  id: string;
+  name: string;
+  description: string;
+  tier: string;
+  carry_api_name: string;
+  units: {
+    apiName: string;
+    name: string;
+    cost: number;
+    items: string[];
+    isCarry?: boolean;
+    isFlex?: boolean;
+  }[];
+  traits: {
+    apiName: string;
+    name: string;
+    count: number;
+  }[];
+  augments: {
+    apiName?: string;
+    name: string;
+    image?: string;
+  }[];
+  early_units: {
+    apiName: string;
+    name: string;
+  }[];
+  cover_image_url: string | null;
+  is_active: boolean;
+  created_at: string;
+}
+
 interface ClientProps {
   tournaments: Tournament[];
   lobbies: Lobby[];
@@ -117,6 +158,7 @@ interface ClientProps {
   matchResults?: MatchResult[];
   standings?: Standing[];
   shopItems?: ShopItem[];
+  comps?: Comp[];
 }
 
 export default function AdminClient({
@@ -126,6 +168,7 @@ export default function AdminClient({
   matchResults = [],
   standings = [],
   shopItems = [],
+  comps = [],
 }: ClientProps) {
   const [newTournamentName, setNewTournamentName] = useState("");
   const [newLobbyCount, setNewLobbyCount] = useState(1);
@@ -154,8 +197,23 @@ export default function AdminClient({
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isAddingLobby, setIsAddingLobby] = useState(false);
   const [activeTab, setActiveTab] = useState<
-    "manage" | "scoring" | "history" | "award" | "shop"
+    "manage" | "scoring" | "history" | "award" | "shop" | "comps"
   >("manage");
+
+  // Comps Tab State
+  const [compName, setCompName] = useState("");
+  const [compDescription, setCompDescription] = useState("");
+  const [compTier, setCompTier] = useState("A");
+  const [compCarryApiName, setCompCarryApiName] = useState("");
+  const [compCoverImageUrl, setCompCoverImageUrl] = useState("");
+  const [compIsActive, setCompIsActive] = useState(true);
+  const [compUnits, setCompUnits] = useState<{ apiName: string; name: string; isCarry: boolean; isFlex: boolean; items: string[] }[]>([]);
+  const [compTraits, setCompTraits] = useState<{ apiName: string; name: string; count: number }[]>([]);
+  const [compAugments, setCompAugments] = useState<{ name: string }[]>([]);
+  const [compEarlyUnits, setCompEarlyUnits] = useState<{ apiName: string; name: string }[]>([]);
+  const [editingCompId, setEditingCompId] = useState<string | null>(null);
+  const [isSubmittingComp, setIsSubmittingComp] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   const [newItemName, setNewItemName] = useState("");
   const [newItemDesc, setNewItemDesc] = useState("");
@@ -374,6 +432,114 @@ export default function AdminClient({
       setMessage({ text: `Lỗi: ${result.error}`, type: "error" });
     }
   };
+
+  const handleCreateOrUpdateComp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!compName.trim()) return;
+
+    setIsSubmittingComp(true);
+    setMessage(null);
+
+    const compData = {
+      name: compName,
+      description: compDescription,
+      tier: compTier,
+      carry_api_name: compCarryApiName || (compUnits.find(u => u.isCarry)?.apiName || ""),
+      units: compUnits,
+      traits: compTraits,
+      augments: compAugments,
+      early_units: compEarlyUnits,
+      cover_image_url: compCoverImageUrl || null,
+      is_active: compIsActive,
+    };
+
+    let result;
+    if (editingCompId) {
+      result = await updateCompAction(editingCompId, compData);
+    } else {
+      result = await createCompAction(compData);
+    }
+
+    setIsSubmittingComp(false);
+    if (result.success) {
+      setMessage({
+        text: editingCompId ? "Đã cập nhật đội hình!" : "Đã tạo đội hình mới!",
+        type: "success",
+      });
+      // Reset form
+      setCompName("");
+      setCompDescription("");
+      setCompTier("A");
+      setCompCarryApiName("");
+      setCompCoverImageUrl("");
+      setCompIsActive(true);
+      setCompUnits([]);
+      setCompTraits([]);
+      setCompAugments([]);
+      setCompEarlyUnits([]);
+      setEditingCompId(null);
+    } else {
+      setMessage({ text: `Lỗi: ${result.error}`, type: "error" });
+    }
+  };
+
+  const handleEditCompClick = (comp: Comp) => {
+    setEditingCompId(comp.id);
+    setCompName(comp.name);
+    setCompDescription(comp.description || "");
+    setCompTier(comp.tier || "A");
+    setCompCarryApiName(comp.carry_api_name || "");
+    setCompCoverImageUrl(comp.cover_image_url || "");
+    setCompIsActive(comp.is_active);
+    setCompUnits((comp.units || []).map(u => ({ ...u, isCarry: u.isCarry ?? false, isFlex: u.isFlex ?? false })));
+    setCompTraits(comp.traits || []);
+    setCompAugments(comp.augments || []);
+    setCompEarlyUnits(comp.early_units || []);
+    setActiveTab("comps"); // Switch tab
+  };
+
+  const handleDeleteComp = async (id: string, name: string) => {
+    if (!confirm(`Xóa đội hình "${name}"?`)) return;
+    setMessage(null);
+    const result = await deleteCompAction(id);
+    if (result.success) {
+      setMessage({ text: `Đã xóa đội hình "${name}"!`, type: "success" });
+    } else {
+      setMessage({ text: `Lỗi: ${result.error}`, type: "error" });
+    }
+  };
+
+  const handleToggleCompActive = async (id: string, current: boolean) => {
+    setMessage(null);
+    const result = await toggleCompAction(id, !current);
+    if (result.success) {
+      setMessage({ text: `Đã ${!current ? "kích hoạt" : "ẩn"} đội hình!`, type: "success" });
+    } else {
+      setMessage({ text: `Lỗi: ${result.error}`, type: "error" });
+    }
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingImage(true);
+    setMessage(null);
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const result = await uploadCompImageAction(formData);
+    setUploadingImage(false);
+
+    if (result.success && result.url) {
+      setCompCoverImageUrl(result.url);
+      setMessage({ text: "Tải ảnh lên thành công!", type: "success" });
+    } else {
+      setMessage({ text: `Lỗi tải ảnh: ${result.error}`, type: "error" });
+    }
+  };
+
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
@@ -690,6 +856,13 @@ export default function AdminClient({
                   >
                     <ShoppingBag className="w-3.5 h-3.5 mr-1.5" />
                     Shop ({shopItems.length})
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="comps"
+                    className="data-[state=active]:bg-violet-500/10 data-[state=active]:text-violet-400 text-zinc-400 border border-transparent px-4 py-2 text-xs font-mono font-bold rounded-lg"
+                  >
+                    <Crown className="w-3.5 h-3.5 mr-1.5" />
+                    Đội Hình Hot ({comps.length})
                   </TabsTrigger>
                 </TabsList>
 
@@ -1250,6 +1423,456 @@ export default function AdminClient({
                           Chưa có vật phẩm.
                         </div>
                       )}
+                    </div>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="comps" className="mt-4">
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    {/* Column 1: Form */}
+                    <div className="lg:col-span-7 flex flex-col gap-4">
+                      <div className="glass-card p-5">
+                        <h4 className="text-sm font-mono font-bold text-violet-400 uppercase mb-4 flex items-center gap-2">
+                          <Crown className="w-4 h-4" />
+                          {editingCompId ? "Chỉnh sửa đội hình" : "Tạo Đội Hình Mới"}
+                        </h4>
+                        <form onSubmit={handleCreateOrUpdateComp} className="flex flex-col gap-4">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div className="flex flex-col gap-1">
+                              <label className="text-[10px] text-zinc-500 font-mono uppercase font-bold">Tên đội hình</label>
+                              <input
+                                type="text"
+                                value={compName}
+                                onChange={(e) => setCompName(e.target.value)}
+                                placeholder="Diệu Thủ Annie..."
+                                required
+                                className="bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2 text-sm font-mono text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:border-violet-500/50"
+                              />
+                            </div>
+                            <div className="flex flex-col gap-1">
+                              <label className="text-[10px] text-zinc-500 font-mono uppercase font-bold">Tier</label>
+                              <select
+                                value={compTier}
+                                onChange={(e) => setCompTier(e.target.value)}
+                                className="bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2 text-sm font-mono text-zinc-200 focus:outline-none focus:border-violet-500/50 cursor-pointer"
+                              >
+                                <option value="S">🔥 Tier S</option>
+                                <option value="A">⭐ Tier A</option>
+                                <option value="B">⚡ Tier B</option>
+                                <option value="C">❄️ Tier C</option>
+                              </select>
+                            </div>
+                          </div>
+
+                          <div className="flex flex-col gap-1">
+                            <label className="text-[10px] text-zinc-500 font-mono uppercase font-bold">Mô tả lối chơi</label>
+                            <textarea
+                              value={compDescription}
+                              onChange={(e) => setCompDescription(e.target.value)}
+                              placeholder="Slowroll Annie 3 sao ở cấp 5..."
+                              rows={2}
+                              className="bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2 text-sm font-mono text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:border-violet-500/50"
+                            />
+                          </div>
+
+                          {/* Image upload */}
+                          <div className="flex flex-col gap-1">
+                            <label className="text-[10px] text-zinc-500 font-mono uppercase font-bold">Ảnh Cover (Upload)</label>
+                            <div className="flex items-center gap-3">
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageUpload}
+                                className="hidden"
+                                id="comp-image-upload"
+                                disabled={uploadingImage}
+                              />
+                              <label
+                                htmlFor="comp-image-upload"
+                                className="px-4 py-2 bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.08] rounded-lg text-xs font-mono font-bold text-zinc-300 transition-colors cursor-pointer flex items-center gap-2"
+                              >
+                                {uploadingImage ? "Đang tải lên..." : "Chọn ảnh từ máy..."}
+                              </label>
+                              {compCoverImageUrl && (
+                                <span className="text-[10px] text-green-400 font-mono line-clamp-1 flex-1">
+                                  ✅ Đã có ảnh cover
+                                </span>
+                              )}
+                            </div>
+                            {compCoverImageUrl && (
+                              <div className="mt-2 border border-white/[0.08] rounded-lg overflow-hidden max-h-[120px]">
+                                <img src={compCoverImageUrl} alt="Preview" className="w-full h-full object-cover" />
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Carry option dropdown */}
+                          <div className="flex flex-col gap-1">
+                            <label className="text-[10px] text-zinc-500 font-mono uppercase font-bold">Tướng Carry chính</label>
+                            <select
+                              value={compCarryApiName}
+                              onChange={(e) => setCompCarryApiName(e.target.value)}
+                              className="bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2 text-sm font-mono text-zinc-200 focus:outline-none focus:border-violet-500/50 cursor-pointer"
+                            >
+                              <option value="">-- Chọn tướng carry chính --</option>
+                              {tftData.champions.map((c: any) => (
+                                <option key={c.apiName} value={c.apiName}>{c.name}</option>
+                              ))}
+                            </select>
+                          </div>
+
+                          {/* Grid champions selector */}
+                          <div className="flex flex-col gap-1 border-t border-white/[0.06] pt-3">
+                            <label className="text-[10px] text-zinc-400 font-mono uppercase font-bold mb-2">Chọn Tướng Cho Đội Hình</label>
+                            <div className="grid grid-cols-6 sm:grid-cols-8 gap-2 max-h-[180px] overflow-y-auto p-1 bg-black/20 rounded-lg border border-white/[0.04]">
+                              {tftData.champions.map((c: any) => {
+                                const isSelected = compUnits.some(u => u.apiName === c.apiName);
+                                return (
+                                  <button
+                                    key={c.apiName}
+                                    type="button"
+                                    onClick={() => {
+                                      if (isSelected) {
+                                        setCompUnits(compUnits.filter(u => u.apiName !== c.apiName));
+                                      } else {
+                                        setCompUnits([...compUnits, { apiName: c.apiName, name: c.name, isCarry: false, isFlex: false, items: [] }]);
+                                      }
+                                    }}
+                                    title={c.name}
+                                    className={cn(
+                                      "relative flex items-center justify-center p-1 rounded border transition-all hover:scale-105 aspect-square",
+                                      isSelected 
+                                        ? "border-violet-500 bg-violet-500/20" 
+                                        : "border-white/[0.06] bg-white/[0.01] grayscale hover:grayscale-0"
+                                    )}
+                                  >
+                                    {c.image ? (
+                                      <img src={c.image} alt={c.name} className="w-full h-full object-cover rounded" />
+                                    ) : (
+                                      <span className="text-[8px] line-clamp-1">{c.name}</span>
+                                    )}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+
+                          {/* Selected Champions settings */}
+                          {compUnits.length > 0 && (
+                            <div className="flex flex-col gap-2 bg-white/[0.01] border border-white/[0.04] rounded-lg p-3">
+                              <span className="text-[10px] text-zinc-500 font-mono uppercase font-bold">Cấu hình tướng đã chọn:</span>
+                              <div className="flex flex-col gap-2 max-h-[220px] overflow-y-auto">
+                                {compUnits.map((u, uIdx) => {
+                                  const champData = tftData.champions.find((c: any) => c.apiName === u.apiName);
+                                  return (
+                                    <div key={u.apiName} className="flex flex-col gap-2 p-2 bg-black/20 border border-white/[0.04] rounded bg-white/[0.02]">
+                                      <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2">
+                                          {champData?.image && (
+                                            <img src={champData.image} alt={u.name} className="w-5 h-5 object-cover rounded" />
+                                          )}
+                                          <span className="text-xs font-bold font-mono text-zinc-300">{u.name}</span>
+                                        </div>
+                                        <div className="flex items-center gap-3">
+                                          <label className="flex items-center gap-1 text-[10px] text-zinc-400 font-mono cursor-pointer">
+                                            <input
+                                              type="checkbox"
+                                              checked={u.isCarry}
+                                              onChange={(e) => {
+                                                const updated = [...compUnits];
+                                                updated[uIdx].isCarry = e.target.checked;
+                                                setCompUnits(updated);
+                                              }}
+                                            />
+                                            👑 Carry
+                                          </label>
+                                          <label className="flex items-center gap-1 text-[10px] text-zinc-400 font-mono cursor-pointer">
+                                            <input
+                                              type="checkbox"
+                                              checked={u.isFlex}
+                                              onChange={(e) => {
+                                                const updated = [...compUnits];
+                                                updated[uIdx].isFlex = e.target.checked;
+                                                setCompUnits(updated);
+                                              }}
+                                            />
+                                            🔄 Flex
+                                          </label>
+                                        </div>
+                                      </div>
+
+                                      {/* Item selects */}
+                                      <div className="grid grid-cols-3 gap-2">
+                                        {[0, 1, 2].map((slotIdx) => (
+                                          <select
+                                            key={slotIdx}
+                                            value={u.items[slotIdx] || ""}
+                                            onChange={(e) => {
+                                              const updated = [...compUnits];
+                                              const items = [...(u.items || [])];
+                                              if (e.target.value) {
+                                                items[slotIdx] = e.target.value;
+                                              } else {
+                                                items.splice(slotIdx, 1);
+                                              }
+                                              updated[uIdx].items = items.filter(Boolean);
+                                              setCompUnits(updated);
+                                            }}
+                                            className="bg-white/[0.03] border border-white/[0.08] rounded p-1 text-[10px] font-mono text-zinc-300 focus:outline-none"
+                                          >
+                                            <option value="">Trang bị {slotIdx + 1}</option>
+                                            {tftData.items.map((item: any) => (
+                                              <option key={item.apiName} value={item.apiName}>{item.name}</option>
+                                            ))}
+                                          </select>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Traits management */}
+                          <div className="flex flex-col gap-1 border-t border-white/[0.06] pt-3">
+                            <label className="text-[10px] text-zinc-400 font-mono uppercase font-bold">Kích Hoạt Tộc / Hệ</label>
+                            <div className="flex flex-wrap gap-2 mb-2">
+                              {compTraits.map((trait, tIdx) => (
+                                <div key={trait.apiName} className="flex items-center gap-1 px-2 py-1 bg-violet-500/10 border border-violet-500/20 text-violet-400 font-mono text-[10px] font-bold rounded">
+                                  <span>{trait.name} ({trait.count})</span>
+                                  <button
+                                    type="button"
+                                    onClick={() => setCompTraits(compTraits.filter(t => t.apiName !== trait.apiName))}
+                                    className="hover:text-rose-400 cursor-pointer ml-1"
+                                  >
+                                    ✕
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                            <div className="grid grid-cols-2 gap-2">
+                              <select
+                                onChange={(e) => {
+                                  if (!e.target.value) return;
+                                  const selectedTrait = tftData.traits.find((t: any) => t.apiName === e.target.value);
+                                  if (selectedTrait && !compTraits.some(t => t.apiName === e.target.value)) {
+                                    setCompTraits([...compTraits, { apiName: selectedTrait.apiName, name: selectedTrait.name, count: 2 }]);
+                                  }
+                                  e.target.value = "";
+                                }}
+                                className="bg-white/[0.03] border border-white/[0.08] rounded-lg p-2 text-xs font-mono text-zinc-300 cursor-pointer"
+                              >
+                                <option value="">+ Thêm tộc/hệ...</option>
+                                {tftData.traits.map((t: any) => (
+                                  <option key={t.apiName} value={t.apiName}>{t.name}</option>
+                                ))}
+                              </select>
+                              {compTraits.length > 0 && (
+                                <div className="flex flex-col gap-1 max-h-[120px] overflow-y-auto">
+                                  {compTraits.map((t, idx) => (
+                                    <div key={t.apiName} className="flex items-center justify-between gap-2 p-1 bg-black/10 rounded">
+                                      <span className="text-[10px] font-mono text-zinc-400">{t.name}</span>
+                                      <input
+                                        type="number"
+                                        value={t.count}
+                                        onChange={(e) => {
+                                          const updated = [...compTraits];
+                                          updated[idx].count = Math.max(1, Number(e.target.value));
+                                          setCompTraits(updated);
+                                        }}
+                                        className="w-12 bg-white/[0.03] border border-white/[0.08] rounded p-0.5 text-center text-[10px] font-mono text-zinc-200"
+                                      />
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Augments management */}
+                          <div className="flex flex-col gap-1 border-t border-white/[0.06] pt-3">
+                            <label className="text-[10px] text-zinc-400 font-mono uppercase font-bold">Lõi Công Nghệ Khuyên Dùng (Ưu Tiên)</label>
+                            <div className="flex flex-wrap gap-2 mb-2">
+                              {compAugments.map((a, aIdx) => (
+                                <div key={aIdx} className="flex items-center gap-1 px-2 py-1 bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 font-mono text-[10px] font-bold rounded">
+                                  <span>{a.name}</span>
+                                  <button
+                                    type="button"
+                                    onClick={() => setCompAugments(compAugments.filter((_, i) => i !== aIdx))}
+                                    className="hover:text-rose-400 cursor-pointer ml-1"
+                                  >
+                                    ✕
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                            <input
+                              type="text"
+                              placeholder="Nhập tên lõi và ấn Enter..."
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                  e.preventDefault();
+                                  const val = e.currentTarget.value.trim();
+                                  if (val) {
+                                    setCompAugments([...compAugments, { name: val }]);
+                                    e.currentTarget.value = "";
+                                  }
+                                }
+                              }}
+                              className="bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2 text-xs font-mono text-zinc-200 placeholder:text-zinc-600 focus:outline-none"
+                            />
+                          </div>
+
+                          {/* Early units */}
+                          <div className="flex flex-col gap-1 border-t border-white/[0.06] pt-3">
+                            <label className="text-[10px] text-zinc-400 font-mono uppercase font-bold">Đội Hình Đầu Trận</label>
+                            <div className="flex flex-wrap gap-2 mb-2">
+                              {compEarlyUnits.map((u, uIdx) => (
+                                <div key={uIdx} className="flex items-center gap-1 px-2 py-1 bg-amber-500/10 border border-amber-500/20 text-amber-400 font-mono text-[10px] font-bold rounded">
+                                  <span>{u.name}</span>
+                                  <button
+                                    type="button"
+                                    onClick={() => setCompEarlyUnits(compEarlyUnits.filter((_, i) => i !== uIdx))}
+                                    className="hover:text-rose-400 cursor-pointer ml-1"
+                                  >
+                                    ✕
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                            <select
+                              onChange={(e) => {
+                                if (!e.target.value) return;
+                                const champData = tftData.champions.find((c: any) => c.apiName === e.target.value);
+                                if (champData && !compEarlyUnits.some(u => u.apiName === e.target.value)) {
+                                  setCompEarlyUnits([...compEarlyUnits, { apiName: champData.apiName, name: champData.name }]);
+                                }
+                                e.target.value = "";
+                              }}
+                              className="bg-white/[0.03] border border-white/[0.08] rounded-lg p-2 text-xs font-mono text-zinc-300 cursor-pointer"
+                            >
+                              <option value="">+ Thêm tướng đầu trận...</option>
+                              {tftData.champions.map((c: any) => (
+                                <option key={c.apiName} value={c.apiName}>{c.name}</option>
+                              ))}
+                            </select>
+                          </div>
+
+                          <div className="flex gap-3 pt-4 border-t border-white/[0.06]">
+                            <button
+                              type="submit"
+                              disabled={isSubmittingComp || !compName.trim()}
+                              className="flex-1 py-2.5 bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-500 hover:to-violet-400 text-white font-semibold rounded-lg transition-all cursor-pointer disabled:opacity-50 text-sm"
+                            >
+                              {isSubmittingComp ? "Đang xử lý..." : editingCompId ? "Cập Nhật Đội Hình" : "Tạo Đội Hình"}
+                            </button>
+                            {editingCompId && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setEditingCompId(null);
+                                  setCompName("");
+                                  setCompDescription("");
+                                  setCompTier("A");
+                                  setCompCarryApiName("");
+                                  setCompCoverImageUrl("");
+                                  setCompUnits([]);
+                                  setCompTraits([]);
+                                  setCompAugments([]);
+                                  setCompEarlyUnits([]);
+                                }}
+                                className="px-4 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-semibold rounded-lg transition-colors cursor-pointer text-sm"
+                              >
+                                Hủy
+                              </button>
+                            )}
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+
+                    {/* Column 2: Listing */}
+                    <div className="lg:col-span-5 flex flex-col gap-4">
+                      <div className="glass-card overflow-hidden">
+                        <div className="p-4 border-b border-white/[0.06]">
+                          <h4 className="text-sm font-mono font-bold text-zinc-200 flex items-center gap-2">
+                            <Crown className="w-4 h-4 text-violet-400" />
+                            Đội Hình Hot TFT ({comps.length})
+                          </h4>
+                        </div>
+                        {comps.length > 0 ? (
+                          <div className="divide-y divide-white/[0.03] max-h-[800px] overflow-y-auto">
+                            {comps.map((c) => {
+                              const carryInfo = tftData.champions.find((champ: any) => champ.apiName === c.carry_api_name);
+                              return (
+                                <div key={c.id} className="p-4 hover:bg-white/[0.02] transition-colors flex flex-col gap-3">
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                      <span className={cn(
+                                        "text-[9px] font-mono px-2 py-0.5 rounded font-bold border",
+                                        c.tier === "S" 
+                                          ? "bg-amber-500/10 text-amber-400 border-amber-500/20"
+                                          : c.tier === "A"
+                                          ? "bg-blue-500/10 text-blue-400 border-blue-500/20"
+                                          : c.tier === "B"
+                                          ? "bg-zinc-300/10 text-zinc-300 border-zinc-300/20"
+                                          : "bg-zinc-500/10 text-zinc-500 border-zinc-500/20"
+                                      )}>
+                                        Tier {c.tier}
+                                      </span>
+                                      <span className="font-bold text-sm text-zinc-200 font-mono">{c.name}</span>
+                                    </div>
+                                    <span className={cn(
+                                      "text-[9px] font-mono px-1.5 py-0.5 rounded font-bold",
+                                      c.is_active ? "bg-green-500/10 text-green-400" : "bg-rose-500/10 text-rose-400"
+                                    )}>
+                                      {c.is_active ? "ACTIVE" : "HIDDEN"}
+                                    </span>
+                                  </div>
+
+                                  <div className="flex items-center gap-2 text-xs font-mono text-zinc-500">
+                                    {carryInfo?.image && (
+                                      <img src={carryInfo.image} alt={carryInfo.name} className="w-4 h-4 object-cover rounded" />
+                                    )}
+                                    <span>Carry: {carryInfo?.name || c.carry_api_name || "N/A"}</span>
+                                  </div>
+
+                                  <div className="flex gap-2">
+                                    <button
+                                      onClick={() => handleEditCompClick(c)}
+                                      className="px-2 py-1 bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.08] rounded text-[10px] font-mono font-bold text-zinc-300 transition-colors cursor-pointer"
+                                    >
+                                      Sửa
+                                    </button>
+                                    <button
+                                      onClick={() => handleToggleCompActive(c.id, c.is_active)}
+                                      className={cn(
+                                        "px-2 py-1 border rounded text-[10px] font-mono font-bold transition-colors cursor-pointer",
+                                        c.is_active 
+                                          ? "bg-rose-500/10 text-rose-400 border-rose-500/20 hover:bg-rose-500/20" 
+                                          : "bg-green-500/10 text-green-400 border-green-500/20 hover:bg-green-500/20"
+                                      )}
+                                    >
+                                      {c.is_active ? "Ẩn" : "Hiện"}
+                                    </button>
+                                    <button
+                                      onClick={() => handleDeleteComp(c.id, c.name)}
+                                      className="px-2 py-1 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 rounded text-[10px] font-mono font-bold text-rose-400 transition-colors cursor-pointer"
+                                    >
+                                      Xóa
+                                    </button>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        ) : (
+                          <div className="p-8 text-center text-zinc-500 text-xs font-mono">
+                            Chưa có đội hình nào.
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </TabsContent>
