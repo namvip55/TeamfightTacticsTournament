@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -286,7 +286,7 @@ export default function AdminClient({
   };
 
   const handleDeleteTournament = async (id: string, name: string) => {
-    if (!confirm(`XÃ³a giáº£i Ä‘áº¥u "${name}" vÃ  toÃ n bá»™ dá»¯ liá»‡u?`)) return;
+    if (!confirm(`Xóa giải đấu "${name}" và toàn bộ dữ liệu?`)) return;
     setMessage(null);
     const result = await deleteTournamentAction(id);
     if (result.success) {
@@ -309,10 +309,10 @@ export default function AdminClient({
     );
     setIsSubmittingScore(false);
     if (result.success) {
-      setMessage({ text: result.message || "ÄÃ£ lÆ°u Ä‘iá»ƒm!", type: "success" });
+      setMessage({ text: result.message || "Đã lưu điểm!", type: "success" });
       setScoringPlacements({});
     } else {
-      setMessage({ text: `Lá»—i: ${result.error}`, type: "error" });
+      setMessage({ text: `Lỗi: ${result.error}`, type: "error" });
     }
   };
 
@@ -327,11 +327,11 @@ export default function AdminClient({
     setIsAutoScoring(false);
     if (result.success) {
       setMessage({
-        text: result.message || "TÃ­nh Ä‘iá»ƒm thÃ nh cÃ´ng!",
+        text: result.message || "Tính điểm thành công!",
         type: "success",
       });
     } else {
-      setMessage({ text: `Lá»—i: ${result.error}`, type: "error" });
+      setMessage({ text: `Lỗi: ${result.error}`, type: "error" });
     }
   };
 
@@ -352,7 +352,7 @@ export default function AdminClient({
 
   const handleMovePlayer = async (discordId: string, riotId: string) => {
     if (!moveTargetLobbyId) {
-      setMessage({ text: "Chá»n lobby Ä‘Ã­ch!", type: "error" });
+      setMessage({ text: "Chọn lobby đích!", type: "error" });
       return;
     }
     setMessage(null);
@@ -376,10 +376,10 @@ export default function AdminClient({
     const result = await undoMatchScoreAction(undoMatchId.trim());
     setIsUndoing(false);
     if (result.success) {
-      setMessage({ text: result.message || "ÄÃ£ undo!", type: "success" });
+      setMessage({ text: result.message || "Đã undo!", type: "success" });
       setUndoMatchId("");
     } else {
-      setMessage({ text: `Lá»—i: ${result.error}`, type: "error" });
+      setMessage({ text: `Lỗi: ${result.error}`, type: "error" });
     }
   };
 
@@ -403,11 +403,11 @@ export default function AdminClient({
     setIsSeeding(false);
     if (result.success) {
       setMessage({
-        text: result.message || "ÄÃ£ seed dá»¯ liá»‡u máº«u!",
+        text: result.message || "Đã seed dữ liệu mẫu!",
         type: "success",
       });
     } else {
-      setMessage({ text: `Lá»—i: ${result.error}`, type: "error" });
+      setMessage({ text: `Lỗi: ${result.error}`, type: "error" });
     }
   };
 
@@ -427,9 +427,9 @@ export default function AdminClient({
       setNewItemName("");
       setNewItemDesc("");
       setNewItemPrice(50);
-      setMessage({ text: "ÄÃ£ táº¡o váº­t pháº©m!", type: "success" });
+      setMessage({ text: "Đã tạo vật phẩm!", type: "success" });
     } else {
-      setMessage({ text: `Lá»—i: ${result.error}`, type: "error" });
+      setMessage({ text: `Lỗi: ${result.error}`, type: "error" });
     }
   };
 
@@ -463,7 +463,7 @@ export default function AdminClient({
     setIsSubmittingComp(false);
     if (result.success) {
       setMessage({
-        text: editingCompId ? "ÄÃ£ cáº­p nháº­t Ä‘á»™i hÃ¬nh!" : "ÄÃ£ táº¡o Ä‘á»™i hÃ¬nh má»›i!",
+        text: editingCompId ? "Đã cập nhật đội hình!" : "Đã tạo đội hình mới!",
         type: "success",
       });
       // Reset form
@@ -479,7 +479,7 @@ export default function AdminClient({
       setCompEarlyUnits([]);
       setEditingCompId(null);
     } else {
-      setMessage({ text: `Lá»—i: ${result.error}`, type: "error" });
+      setMessage({ text: `Lỗi: ${result.error}`, type: "error" });
     }
   };
 
@@ -499,13 +499,13 @@ export default function AdminClient({
   };
 
   const handleDeleteComp = async (id: string, name: string) => {
-    if (!confirm(`XÃ³a Ä‘á»™i hÃ¬nh "${name}"?`)) return;
+    if (!confirm(`Xóa đội hình "${name}"?`)) return;
     setMessage(null);
     const result = await deleteCompAction(id);
     if (result.success) {
-      setMessage({ text: `ÄÃ£ xÃ³a Ä‘á»™i hÃ¬nh "${name}"!`, type: "success" });
+      setMessage({ text: `Đã xóa đội hình "${name}"!`, type: "success" });
     } else {
-      setMessage({ text: `Lá»—i: ${result.error}`, type: "error" });
+      setMessage({ text: `Lỗi: ${result.error}`, type: "error" });
     }
   };
 
@@ -513,9 +513,9 @@ export default function AdminClient({
     setMessage(null);
     const result = await toggleCompAction(id, !current);
     if (result.success) {
-      setMessage({ text: `ÄÃ£ ${!current ? "kÃ­ch hoáº¡t" : "áº©n"} Ä‘á»™i hÃ¬nh!`, type: "success" });
+      setMessage({ text: `Đã ${!current ? "kích hoạt" : "ẩn"} đội hình!`, type: "success" });
     } else {
-      setMessage({ text: `Lá»—i: ${result.error}`, type: "error" });
+      setMessage({ text: `Lỗi: ${result.error}`, type: "error" });
     }
   };
 
@@ -534,9 +534,9 @@ export default function AdminClient({
 
     if (result.success && result.url) {
       setCompCoverImageUrl(result.url);
-      setMessage({ text: "Táº£i áº£nh lÃªn thÃ nh cÃ´ng!", type: "success" });
+      setMessage({ text: "Tải ảnh lên thành công!", type: "success" });
     } else {
-      setMessage({ text: `Lá»—i táº£i áº£nh: ${result.error}`, type: "error" });
+      setMessage({ text: `Lỗi tải ảnh: ${result.error}`, type: "error" });
     }
   };
 
@@ -557,7 +557,7 @@ export default function AdminClient({
       <div className="glass-card p-4 flex items-center justify-between">
         <div className="flex items-center gap-2 text-green-400 font-mono text-xs font-bold">
           <span className="w-2 h-2 bg-green-400 rounded-full neon-pulse" />
-          ÄÃ£ Ä‘Äƒng nháº­p quyá»n Quáº£n trá»‹ viÃªn
+          Đã đăng nhập quyền Quản trị viên
         </div>
         <button
           onClick={handleLogout}
@@ -565,7 +565,7 @@ export default function AdminClient({
           className="px-4 py-1.5 bg-rose-500/10 text-rose-400 border border-rose-500/20 rounded-lg hover:bg-rose-500/20 font-bold text-xs transition-colors cursor-pointer disabled:opacity-50 flex items-center gap-2"
         >
           <LogOut className="w-3.5 h-3.5" />
-          {isLoggingOut ? "Äang Ä‘Äƒng xuáº¥t..." : "ÄÄƒng Xuáº¥t"}
+          {isLoggingOut ? "Đang đăng xuất..." : "Đăng Xuất"}
         </button>
       </div>
 
@@ -574,13 +574,13 @@ export default function AdminClient({
         <div className="flex-1 flex flex-col gap-1.5">
           <span className="text-[10px] text-violet-400 font-mono uppercase tracking-widest font-bold flex items-center gap-1">
             <Sparkles className="w-3 h-3" />
-            Tráº£i Nghiá»‡m Thá»­
+            Trải Nghiệm Thử
           </span>
           <h3 className="text-lg font-semibold text-white">
-            Khá»Ÿi táº¡o dá»¯ liá»‡u máº«u
+            Khởi tạo dữ liệu mẫu
           </h3>
           <p className="text-xs text-zinc-500 leading-relaxed max-w-2xl font-mono">
-            Táº¡o giáº£i Ä‘áº¥u máº«u vá»›i 8 cá» thá»§, Ä‘iá»ƒm sá»‘ vÃ  BXH.
+            Tạo giải đấu mẫu với 8 cờ thủ, điểm số và BXH.
           </p>
         </div>
         <button
@@ -591,10 +591,10 @@ export default function AdminClient({
           {isSeeding ? (
             <>
               <Loader2 className="w-4 h-4 animate-spin" />
-              Äang Khá»Ÿi Táº¡o...
+              Đang Khởi Tạo...
             </>
           ) : (
-            "Khá»Ÿi Táº¡o Dá»¯ Liá»‡u Máº«u"
+            "Khởi Tạo Dữ Liệu Mẫu"
           )}
         </button>
       </section>
@@ -619,7 +619,7 @@ export default function AdminClient({
             onClick={() => setMessage(null)}
             className="text-zinc-500 hover:text-zinc-300 cursor-pointer"
           >
-            âœ•
+            ✕
           </button>
         </div>
       )}
@@ -632,7 +632,7 @@ export default function AdminClient({
           <div className="glass-card p-5 flex flex-col gap-4">
             <h3 className="text-xs font-mono font-bold tracking-wide uppercase text-violet-400 flex items-center gap-2">
               <Plus className="w-3.5 h-3.5" />
-              Táº¡o Giáº£i Äáº¥u Má»›i
+              Tạo Giải Đấu Mới
             </h3>
             <form
               onSubmit={handleCreateTournament}
@@ -642,7 +642,7 @@ export default function AdminClient({
                 type="text"
                 value={newTournamentName}
                 onChange={(e) => setNewTournamentName(e.target.value)}
-                placeholder="TÃªn giáº£i Ä‘áº¥u..."
+                placeholder="Tên giải đấu..."
                 required
                 disabled={isCreating}
                 className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2 text-sm font-mono text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:border-violet-500/50"
@@ -650,7 +650,7 @@ export default function AdminClient({
               <div className="grid grid-cols-2 gap-3">
                 <div className="flex flex-col gap-1">
                   <label className="text-[10px] text-zinc-500 font-mono uppercase font-bold">
-                    Sá»‘ Lobby
+                    Số Lobby
                   </label>
                   <input
                     type="number"
@@ -667,14 +667,14 @@ export default function AdminClient({
                 </div>
                 <div className="flex flex-col gap-1">
                   <label className="text-[10px] text-zinc-500 font-mono uppercase font-bold">
-                    Cháº¿ Ä‘á»™
+                    Chế độ
                   </label>
                   <select
                     value={newMode}
                     onChange={(e) => setNewMode(e.target.value)}
                     className="bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2 text-sm font-mono text-zinc-200 focus:outline-none focus:border-violet-500/50 cursor-pointer"
                   >
-                    <option value="normal">Giáº£i thÆ°á»ng</option>
+                    <option value="normal">Giải thường</option>
                     <option value="checkmate">Checkmate</option>
                   </select>
                 </div>
@@ -682,7 +682,7 @@ export default function AdminClient({
               {newMode === "checkmate" && (
                 <div className="flex flex-col gap-1">
                   <label className="text-[10px] text-zinc-500 font-mono uppercase font-bold">
-                    Má»‘c Ä‘iá»ƒm Checkmate
+                    Mốc điểm Checkmate
                   </label>
                   <input
                     type="number"
@@ -701,7 +701,7 @@ export default function AdminClient({
                 disabled={isCreating || !newTournamentName.trim()}
                 className="w-full py-2 bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-500 hover:to-violet-400 text-white font-semibold rounded-lg transition-all cursor-pointer disabled:opacity-50 text-sm"
               >
-                {isCreating ? "Äang táº¡o..." : "Táº¡o Giáº£i Äáº¥u"}
+                {isCreating ? "Đang tạo..." : "Tạo Giải Đấu"}
               </button>
             </form>
           </div>
@@ -711,7 +711,7 @@ export default function AdminClient({
             <div className="p-4 border-b border-white/[0.06]">
               <h3 className="text-xs font-mono font-bold tracking-wide uppercase text-zinc-400 flex items-center gap-2">
                 <Trophy className="w-3.5 h-3.5 text-violet-400" />
-                Giáº£i Äáº¥u ({tournaments.length})
+                Giải Đấu ({tournaments.length})
               </h3>
             </div>
             {tournaments.length > 0 ? (
@@ -741,9 +741,9 @@ export default function AdminClient({
                         )}
                       >
                         {t.status === "registration_open"
-                          ? "Má»Ÿ"
+                          ? "Mở"
                           : t.status === "active"
-                          ? "Äáº¥u"
+                          ? "Đấu"
                           : "Xong"}
                       </span>
                     </div>
@@ -761,7 +761,7 @@ export default function AdminClient({
                     {t.winner_riot_id && (
                       <div className="mt-1.5 text-[10px] text-amber-400 font-mono font-bold flex items-center gap-1">
                         <Crown className="w-3 h-3" />
-                        VÃ´ Ä‘á»‹ch: {t.winner_riot_id}
+                        Vô địch: {t.winner_riot_id}
                       </div>
                     )}
                     <div
@@ -781,11 +781,11 @@ export default function AdminClient({
                       >
                         {t.registration_open ? (
                           <>
-                            <Lock className="w-2.5 h-2.5" /> KhÃ³a
+                            <Lock className="w-2.5 h-2.5" /> Khóa
                           </>
                         ) : (
                           <>
-                            <Unlock className="w-2.5 h-2.5" /> Má»Ÿ
+                            <Unlock className="w-2.5 h-2.5" /> Mở
                           </>
                         )}
                       </button>
@@ -799,7 +799,7 @@ export default function AdminClient({
                         onClick={() => handleDeleteTournament(t.id, t.name)}
                         className="px-2 py-1 rounded text-[10px] border border-white/[0.06] bg-white/[0.02] text-zinc-500 hover:bg-rose-500/10 hover:text-rose-400 hover:border-rose-500/30 font-bold transition-colors cursor-pointer flex items-center gap-1"
                       >
-                        <Trash2 className="w-2.5 h-2.5" /> XÃ³a
+                        <Trash2 className="w-2.5 h-2.5" /> Xóa
                       </button>
                     </div>
                   </div>
@@ -807,7 +807,7 @@ export default function AdminClient({
               </div>
             ) : (
               <div className="p-8 text-center text-zinc-500 text-xs">
-                ChÆ°a cÃ³ giáº£i Ä‘áº¥u.
+                Chưa có giải đấu.
               </div>
             )}
           </div>
@@ -827,28 +827,28 @@ export default function AdminClient({
                     className="data-[state=active]:bg-violet-500/10 data-[state=active]:text-violet-400 text-zinc-400 border border-transparent px-4 py-2 text-xs font-mono font-bold rounded-lg"
                   >
                     <Gamepad2 className="w-3.5 h-3.5 mr-1.5" />
-                    Quáº£n LÃ½ Lobby
+                    Quản Lý Lobby
                   </TabsTrigger>
                   <TabsTrigger
                     value="scoring"
                     className="data-[state=active]:bg-violet-500/10 data-[state=active]:text-violet-400 text-zinc-400 border border-transparent px-4 py-2 text-xs font-mono font-bold rounded-lg"
                   >
                     <Zap className="w-3.5 h-3.5 mr-1.5" />
-                    TÃ­nh Äiá»ƒm
+                    Tính Điểm
                   </TabsTrigger>
                   <TabsTrigger
                     value="history"
                     className="data-[state=active]:bg-violet-500/10 data-[state=active]:text-violet-400 text-zinc-400 border border-transparent px-4 py-2 text-xs font-mono font-bold rounded-lg"
                   >
                     <History className="w-3.5 h-3.5 mr-1.5" />
-                    Lá»‹ch Sá»­ ({tournamentMatchResults.length})
+                    Lịch Sử ({tournamentMatchResults.length})
                   </TabsTrigger>
                   <TabsTrigger
                     value="award"
                     className="data-[state=active]:bg-amber-500/10 data-[state=active]:text-amber-400 text-zinc-400 border border-transparent px-4 py-2 text-xs font-mono font-bold rounded-lg"
                   >
                     <Crown className="w-3.5 h-3.5 mr-1.5" />
-                    Trao Giáº£i
+                    Trao Giải
                   </TabsTrigger>
                   <TabsTrigger
                     value="shop"
@@ -864,7 +864,7 @@ export default function AdminClient({
                 <div className="glass-card p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 mt-4">
                   <div className="flex flex-col gap-1">
                     <span className="text-[9px] text-zinc-500 font-mono uppercase tracking-wider">
-                      Äang Chá»n
+                      Đang Chọn
                     </span>
                     <span className="text-sm font-bold text-white">
                       {selectedTournament?.name}
@@ -873,7 +873,7 @@ export default function AdminClient({
                       {selectedTournament?.mode === "checkmate" && (
                         <span className="px-1.5 py-0.5 bg-rose-500/10 text-rose-400 border border-rose-500/20 rounded font-bold flex items-center gap-1">
                           <Swords className="w-2.5 h-2.5" />
-                          CHECKMATE ({selectedTournament.checkmate_score}Ä‘)
+                          CHECKMATE ({selectedTournament.checkmate_score}đ)
                         </span>
                       )}
                       <span>{activeLobbies.length} lobby</span>
@@ -883,7 +883,7 @@ export default function AdminClient({
                     href={`/tournaments/${selectedTournamentId}`}
                     className="px-3 py-1.5 bg-white/[0.04] border border-white/[0.08] rounded-lg text-xs font-mono font-bold text-zinc-300 hover:text-white hover:border-violet-500/30 transition-colors flex items-center gap-1"
                   >
-                    <Eye className="w-3 h-3" /> Xem BXH â†’
+                    <Eye className="w-3 h-3" /> Xem BXH →
                   </Link>
                 </div>
 
@@ -920,7 +920,7 @@ export default function AdminClient({
                         className="px-4 py-2 rounded-lg border border-dashed border-violet-500/30 text-xs font-mono font-bold text-violet-400 hover:bg-violet-500/5 transition-colors cursor-pointer disabled:opacity-50 flex items-center gap-1"
                       >
                         <Plus className="w-3 h-3" />
-                        {isAddingLobby ? "..." : "ThÃªm Lobby"}
+                        {isAddingLobby ? "..." : "Thêm Lobby"}
                       </button>
                     </div>
 
@@ -928,8 +928,8 @@ export default function AdminClient({
                       <div className="glass-card overflow-hidden">
                         <div className="p-4 border-b border-white/[0.06] flex items-center justify-between">
                           <h4 className="text-sm font-mono font-bold text-zinc-200">
-                            {currentLobby.name} â€” {playersInLobby.length}/8
-                            tuyá»ƒn thá»§
+                            {currentLobby.name} — {playersInLobby.length}/8
+                            tuyển thủ
                           </h4>
                         </div>
                         {playersInLobby.length > 0 ? (
@@ -956,7 +956,7 @@ export default function AdminClient({
                                         )}
                                       >
                                         Top {player.placement} (+
-                                        {player.points}Ä‘)
+                                        {player.points}đ)
                                       </span>
                                     )}
                                   </div>
@@ -972,7 +972,7 @@ export default function AdminClient({
                                     }
                                     className="bg-white/[0.03] border border-white/[0.08] rounded px-2 py-1.5 text-[10px] font-mono text-zinc-300 cursor-pointer focus:outline-none focus:border-violet-500/50"
                                   >
-                                    <option value="">Chuyá»ƒn Ä‘áº¿n...</option>
+                                    <option value="">Chuyển đến...</option>
                                     {activeLobbies
                                       .filter((l) => l.id !== currentLobby.id)
                                       .map((l) => {
@@ -997,7 +997,7 @@ export default function AdminClient({
                                     className="px-3 py-1.5 bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 rounded text-[10px] font-mono font-bold hover:bg-cyan-500/20 transition-colors cursor-pointer disabled:opacity-40 flex items-center gap-1"
                                   >
                                     <ArrowRightLeft className="w-3 h-3" />
-                                    Chuyá»ƒn
+                                    Chuyển
                                   </button>
                                   <button
                                     onClick={() =>
@@ -1017,7 +1017,7 @@ export default function AdminClient({
                           </div>
                         ) : (
                           <div className="p-8 text-center text-zinc-500 text-xs font-mono">
-                            Lobby chÆ°a cÃ³ tuyá»ƒn thá»§ nÃ o.
+                            Lobby chưa có tuyển thủ nào.
                           </div>
                         )}
                       </div>
@@ -1058,18 +1058,18 @@ export default function AdminClient({
                       <>
                         {playersInLobby.length < 8 ? (
                           <div className="p-4 bg-amber-500/10 border border-amber-500/20 rounded-lg text-xs text-zinc-400 font-mono">
-                            âš  Cáº§n Ä‘á»§ 8 cá» thá»§ trong {currentLobby.name} Ä‘á»ƒ
-                            tÃ­nh Ä‘iá»ƒm. Hiá»‡n táº¡i: {playersInLobby.length}/8
+                            ⚠ Cần đủ 8 cờ thủ trong {currentLobby.name} để
+                            tính điểm. Hiện tại: {playersInLobby.length}/8
                           </div>
                         ) : (
                           <>
                             <div className="glass-card p-4 border-cyan-500/20 flex flex-col gap-3">
                               <span className="text-[10px] font-bold text-cyan-400 font-mono uppercase tracking-wider flex items-center gap-1">
                                 <Zap className="w-3 h-3" />
-                                CÃ¡ch A: TÃ­nh Äiá»ƒm Riot API Tá»± Äá»™ng
+                                Cách A: Tính Điểm Riot API Tự Động
                               </span>
                               <p className="text-[11px] text-zinc-500 font-mono">
-                                QuÃ©t tráº­n chung gáº§n nháº¥t cá»§a 8 cá» thá»§.
+                                Quét trận chung gần nhất của 8 cờ thủ.
                               </p>
                               <button
                                 onClick={handleAutoScore}
@@ -1079,17 +1079,17 @@ export default function AdminClient({
                                 {isAutoScoring ? (
                                   <>
                                     <Loader2 className="w-3 h-3 animate-spin" />
-                                    Äang QuÃ©t API...
+                                    Đang Quét API...
                                   </>
                                 ) : (
-                                  "QuÃ©t & TÃ­nh Äiá»ƒm Riot API"
+                                  "Quét & Tính Điểm Riot API"
                                 )}
                               </button>
                             </div>
 
                             <div className="flex flex-col gap-3">
                               <span className="text-[10px] font-bold text-violet-400 font-mono uppercase tracking-wider">
-                                CÃ¡ch B: Nháº­p Thá»© Háº¡ng Thá»§ CÃ´ng
+                                Cách B: Nhập Thứ Hạng Thủ Công
                               </span>
                               <form
                                 onSubmit={handleManualScoreSubmit}
@@ -1121,11 +1121,11 @@ export default function AdminClient({
                                         }
                                         className="bg-white/[0.03] border border-white/[0.08] rounded px-2 py-1 text-zinc-200 outline-none focus:border-violet-500/50 cursor-pointer"
                                       >
-                                        <option value="">Háº¡ng...</option>
+                                        <option value="">Hạng...</option>
                                         {[1, 2, 3, 4, 5, 6, 7, 8].map(
                                           (n) => (
                                             <option key={n} value={n}>
-                                              Top {n} ({9 - n}Ä‘)
+                                              Top {n} ({9 - n}đ)
                                             </option>
                                           )
                                         )}
@@ -1139,8 +1139,8 @@ export default function AdminClient({
                                   className="w-full py-2.5 bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-500 hover:to-violet-400 text-white font-bold text-xs rounded-lg transition-all cursor-pointer"
                                 >
                                   {isSubmittingScore
-                                    ? "Äang lÆ°u..."
-                                    : "LÆ°u Káº¿t Quáº£ & Cáº­p Nháº­t BXH"}
+                                    ? "Đang lưu..."
+                                    : "Lưu Kết Quả & Cập Nhật BXH"}
                                 </button>
                               </form>
                             </div>
@@ -1152,10 +1152,10 @@ export default function AdminClient({
                     <div className="glass-card p-4 border-rose-500/20 flex flex-col gap-3">
                       <span className="text-[10px] font-bold text-rose-400 font-mono uppercase tracking-wider flex items-center gap-1">
                         <Undo2 className="w-3 h-3" />
-                        Undo Äiá»ƒm Tráº­n Äáº¥u
+                        Undo Điểm Trận Đấu
                       </span>
                       <p className="text-[11px] text-zinc-500 font-mono">
-                        XÃ³a káº¿t quáº£ má»™t tráº­n Ä‘Ã£ tÃ­nh sai.
+                        Xóa kết quả một trận đã tính sai.
                       </p>
                       <div className="flex gap-2">
                         <input
@@ -1170,7 +1170,7 @@ export default function AdminClient({
                           disabled={isUndoing || !undoMatchId.trim()}
                           className="px-4 py-2 bg-rose-500/10 text-rose-400 border border-rose-500/20 rounded-lg text-xs font-mono font-bold hover:bg-rose-500/20 transition-colors cursor-pointer disabled:opacity-50"
                         >
-                          {isUndoing ? "Äang undo..." : "Undo"}
+                          {isUndoing ? "Đang undo..." : "Undo"}
                         </button>
                       </div>
                     </div>
@@ -1185,7 +1185,7 @@ export default function AdminClient({
                         <div className="p-4 border-b border-white/[0.06]">
                           <h4 className="text-sm font-mono font-bold text-zinc-200 flex items-center gap-2">
                             <History className="w-4 h-4 text-violet-400" />
-                            Káº¿t Quáº£ Tráº­n Äáº¥u (
+                            Kết Quả Trận Đấu (
                             {tournamentMatchResults.length})
                           </h4>
                         </div>
@@ -1208,7 +1208,7 @@ export default function AdminClient({
                                       {mr.match_id}
                                     </span>
                                     <span className="text-[10px] text-zinc-500 font-mono">
-                                      {lobby?.name || "N/A"} â€¢{" "}
+                                      {lobby?.name || "N/A"} •{" "}
                                       {new Date(
                                         mr.created_at
                                       ).toLocaleString("vi-VN")}
@@ -1247,7 +1247,7 @@ export default function AdminClient({
                                           )}
                                         >
                                           #{p.placement} {p.riot_id} (+
-                                          {p.points}Ä‘)
+                                          {p.points}đ)
                                         </span>
                                       ))}
                                   </div>
@@ -1259,7 +1259,7 @@ export default function AdminClient({
                       </div>
                     ) : (
                       <div className="glass-card p-10 text-center text-zinc-500 text-xs font-mono">
-                        ChÆ°a cÃ³ káº¿t quáº£ tráº­n Ä‘áº¥u nÃ o.
+                        Chưa có kết quả trận đấu nào.
                       </div>
                     )}
                   </div>
@@ -1282,7 +1282,7 @@ export default function AdminClient({
                     <div className="glass-card p-5">
                       <h4 className="text-sm font-mono font-bold text-cyan-400 uppercase mb-4 flex items-center gap-2">
                         <Plus className="w-4 h-4" />
-                        Táº¡o Váº­t Pháº©m Má»›i
+                        Tạo Vật Phẩm Mới
                       </h4>
                       <form
                         onSubmit={handleCreateShopItem}
@@ -1291,20 +1291,20 @@ export default function AdminClient({
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                           <div className="flex flex-col gap-1">
                             <label className="text-[10px] text-zinc-500 font-mono uppercase font-bold">
-                              TÃªn váº­t pháº©m
+                              Tên vật phẩm
                             </label>
                             <input
                               type="text"
                               value={newItemName}
                               onChange={(e) => setNewItemName(e.target.value)}
-                              placeholder="TÃªn..."
+                              placeholder="Tên..."
                               required
                               className="bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2 text-sm font-mono text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:border-violet-500/50"
                             />
                           </div>
                           <div className="flex flex-col gap-1">
                             <label className="text-[10px] text-zinc-500 font-mono uppercase font-bold">
-                              GiÃ¡ (kim cÆ°Æ¡ng)
+                              Giá (kim cương)
                             </label>
                             <input
                               type="number"
@@ -1321,30 +1321,30 @@ export default function AdminClient({
                         </div>
                         <div className="flex flex-col gap-1">
                           <label className="text-[10px] text-zinc-500 font-mono uppercase font-bold">
-                            MÃ´ táº£
+                            Mô tả
                           </label>
                           <input
                             type="text"
                             value={newItemDesc}
                             onChange={(e) => setNewItemDesc(e.target.value)}
-                            placeholder="MÃ´ táº£..."
+                            placeholder="Mô tả..."
                             className="bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2 text-sm font-mono text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:border-violet-500/50"
                           />
                         </div>
                         <div className="flex flex-col gap-1">
                           <label className="text-[10px] text-zinc-500 font-mono uppercase font-bold">
-                            Loáº¡i
+                            Loại
                           </label>
                           <select
                             value={newItemType}
                             onChange={(e) => setNewItemType(e.target.value)}
                             className="bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2 text-sm font-mono text-zinc-200 focus:outline-none focus:border-violet-500/50 cursor-pointer"
                           >
-                            <option value="badge">ðŸ… Huy Hiá»‡u</option>
+                            <option value="badge">🏅 Huy Hiệu</option>
                             <option value="discord_role">
-                              ðŸŽ­ Discord Role
+                              🎭 Discord Role
                             </option>
-                            <option value="custom_title">âœ¨ Danh Hiá»‡u</option>
+                            <option value="custom_title">✨ Danh Hiệu</option>
                           </select>
                         </div>
                         <button
@@ -1352,7 +1352,7 @@ export default function AdminClient({
                           disabled={isCreatingItem || !newItemName.trim()}
                           className="w-full py-2 bg-gradient-to-r from-cyan-600 to-cyan-500 hover:from-cyan-500 hover:to-cyan-400 text-white font-semibold rounded-lg transition-all cursor-pointer disabled:opacity-50 text-sm"
                         >
-                          {isCreatingItem ? "Äang táº¡o..." : "Táº¡o Váº­t Pháº©m"}
+                          {isCreatingItem ? "Đang tạo..." : "Tạo Vật Phẩm"}
                         </button>
                       </form>
                     </div>
@@ -1361,7 +1361,7 @@ export default function AdminClient({
                       <div className="p-4 border-b border-white/[0.06]">
                         <h4 className="text-sm font-mono font-bold text-zinc-200 flex items-center gap-2">
                           <ShoppingBag className="w-4 h-4 text-cyan-400" />
-                          Váº­t Pháº©m Trong Shop ({shopItems.length})
+                          Vật Phẩm Trong Shop ({shopItems.length})
                         </h4>
                       </div>
                       {shopItems.length > 0 ? (
@@ -1375,10 +1375,10 @@ export default function AdminClient({
                                 <div className="flex items-center gap-2">
                                   <span className="text-lg">
                                     {item.item_type === "discord_role"
-                                      ? "ðŸŽ­"
+                                      ? "🎭"
                                       : item.item_type === "badge"
-                                      ? "ðŸ…"
-                                      : "âœ¨"}
+                                      ? "🏅"
+                                      : "✨"}
                                   </span>
                                   <span className="font-mono font-bold text-sm text-zinc-200">
                                     {item.name}
@@ -1401,8 +1401,8 @@ export default function AdminClient({
                                 )}
                                 <span className="text-[10px] text-zinc-600 font-mono">
                                   {item.stock !== null
-                                    ? `CÃ²n: ${item.stock}`
-                                    : "KhÃ´ng giá»›i háº¡n"}
+                                    ? `Còn: ${item.stock}`
+                                    : "Không giới hạn"}
                                 </span>
                               </div>
                               <span className="text-sm font-mono font-bold text-cyan-400 flex items-center gap-1">
@@ -1414,7 +1414,7 @@ export default function AdminClient({
                         </div>
                       ) : (
                         <div className="p-8 text-center text-zinc-500 text-xs font-mono">
-                          ChÆ°a cÃ³ váº­t pháº©m.
+                          Chưa có vật phẩm.
                         </div>
                       )}
                     </div>
@@ -1425,7 +1425,7 @@ export default function AdminClient({
           ) : (
             <div className="glass-card p-12 text-center text-zinc-500 text-xs font-mono flex flex-col items-center gap-3">
               <Gamepad2 className="w-8 h-8 text-zinc-600" />
-              â† Chá»n hoáº·c táº¡o má»™t giáº£i Ä‘áº¥u á»Ÿ báº£ng bÃªn trÃ¡i Ä‘á»ƒ báº¯t Ä‘áº§u.
+              ← Chọn hoặc tạo một giải đấu ở bảng bên trái để bắt đầu.
             </div>
           )}
         </div>
@@ -1435,7 +1435,7 @@ export default function AdminClient({
       <section className="flex flex-col gap-4">
         <div className="flex items-center gap-3">
           <Crown className="w-4 h-4 text-violet-400" />
-          <h2 className="text-sm font-mono font-bold text-violet-400 uppercase tracking-widest">Quáº£n LÃ½ Äá»™i HÃ¬nh Hot TFT</h2>
+          <h2 className="text-sm font-mono font-bold text-violet-400 uppercase tracking-widest">Quản Lý Đội Hình Hot TFT</h2>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Column 1: Form */}
@@ -1443,17 +1443,17 @@ export default function AdminClient({
             <div className="glass-card p-5">
               <h4 className="text-sm font-mono font-bold text-violet-400 uppercase mb-4 flex items-center gap-2">
                 <Crown className="w-4 h-4" />
-                {editingCompId ? "Chá»‰nh sá»­a Ä‘á»™i hÃ¬nh" : "Táº¡o Äá»™i HÃ¬nh Má»›i"}
+                {editingCompId ? "Chỉnh sửa đội hình" : "Tạo Đội Hình Mới"}
               </h4>
               <form onSubmit={handleCreateOrUpdateComp} className="flex flex-col gap-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div className="flex flex-col gap-1">
-                    <label className="text-[10px] text-zinc-500 font-mono uppercase font-bold">TÃªn Ä‘á»™i hÃ¬nh</label>
+                    <label className="text-[10px] text-zinc-500 font-mono uppercase font-bold">Tên đội hình</label>
                     <input
                       type="text"
                       value={compName}
                       onChange={(e) => setCompName(e.target.value)}
-                      placeholder="Diá»‡u Thá»§ Annie..."
+                      placeholder="Diệu Thủ Annie..."
                       required
                       className="bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2 text-sm font-mono text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:border-violet-500/50"
                     />
@@ -1465,20 +1465,20 @@ export default function AdminClient({
                       onChange={(e) => setCompTier(e.target.value)}
                       className="bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2 text-sm font-mono text-zinc-200 focus:outline-none focus:border-violet-500/50 cursor-pointer"
                     >
-                      <option value="S">ðŸ”¥ Tier S</option>
-                      <option value="A">â­ Tier A</option>
-                      <option value="B">âš¡ Tier B</option>
-                      <option value="C">â„ï¸ Tier C</option>
+                      <option value="S">🔥 Tier S</option>
+                      <option value="A">⭐ Tier A</option>
+                      <option value="B">⚡ Tier B</option>
+                      <option value="C">❄️ Tier C</option>
                     </select>
                   </div>
                 </div>
 
                 <div className="flex flex-col gap-1">
-                  <label className="text-[10px] text-zinc-500 font-mono uppercase font-bold">MÃ´ táº£ lá»‘i chÆ¡i</label>
+                  <label className="text-[10px] text-zinc-500 font-mono uppercase font-bold">Mô tả lối chơi</label>
                   <textarea
                     value={compDescription}
                     onChange={(e) => setCompDescription(e.target.value)}
-                    placeholder="Slowroll Annie 3 sao á»Ÿ cáº¥p 5..."
+                    placeholder="Slowroll Annie 3 sao ở cấp 5..."
                     rows={2}
                     className="bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2 text-sm font-mono text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:border-violet-500/50"
                   />
@@ -1486,7 +1486,7 @@ export default function AdminClient({
 
                 {/* Image upload */}
                 <div className="flex flex-col gap-1">
-                  <label className="text-[10px] text-zinc-500 font-mono uppercase font-bold">áº¢nh Cover (Upload)</label>
+                  <label className="text-[10px] text-zinc-500 font-mono uppercase font-bold">Ảnh Cover (Upload)</label>
                   <div className="flex items-center gap-3">
                     <input
                       type="file"
@@ -1500,11 +1500,11 @@ export default function AdminClient({
                       htmlFor="comp-image-upload"
                       className="px-4 py-2 bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.08] rounded-lg text-xs font-mono font-bold text-zinc-300 transition-colors cursor-pointer flex items-center gap-2"
                     >
-                      {uploadingImage ? "Äang táº£i lÃªn..." : "Chá»n áº£nh tá»« mÃ¡y..."}
+                      {uploadingImage ? "Đang tải lên..." : "Chọn ảnh từ máy..."}
                     </label>
                     {compCoverImageUrl && (
                       <span className="text-[10px] text-green-400 font-mono line-clamp-1 flex-1">
-                        âœ… ÄÃ£ cÃ³ áº£nh cover
+                        ✅ Đã có ảnh cover
                       </span>
                     )}
                   </div>
@@ -1517,13 +1517,13 @@ export default function AdminClient({
 
                 {/* Carry option dropdown */}
                 <div className="flex flex-col gap-1">
-                  <label className="text-[10px] text-zinc-500 font-mono uppercase font-bold">TÆ°á»›ng Carry chÃ­nh</label>
+                  <label className="text-[10px] text-zinc-500 font-mono uppercase font-bold">Tướng Carry chính</label>
                   <select
                     value={compCarryApiName}
                     onChange={(e) => setCompCarryApiName(e.target.value)}
                     className="bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2 text-sm font-mono text-zinc-200 focus:outline-none focus:border-violet-500/50 cursor-pointer"
                   >
-                    <option value="">-- Chá»n tÆ°á»›ng carry chÃ­nh --</option>
+                    <option value="">-- Chọn tướng carry chính --</option>
                     {tftData.champions.map((c: any) => (
                       <option key={c.apiName} value={c.apiName}>{c.name}</option>
                     ))}
@@ -1532,7 +1532,7 @@ export default function AdminClient({
 
                 {/* Grid champions selector */}
                 <div className="flex flex-col gap-1 border-t border-white/[0.06] pt-3">
-                  <label className="text-[10px] text-zinc-400 font-mono uppercase font-bold mb-2">Chá»n TÆ°á»›ng Cho Äá»™i HÃ¬nh</label>
+                  <label className="text-[10px] text-zinc-400 font-mono uppercase font-bold mb-2">Chọn Tướng Cho Đội Hình</label>
                   <div className="grid grid-cols-6 sm:grid-cols-8 gap-2 max-h-[180px] overflow-y-auto p-1 bg-black/20 rounded-lg border border-white/[0.04]">
                     {tftData.champions.map((c: any) => {
                       const isSelected = compUnits.some(u => u.apiName === c.apiName);
@@ -1569,7 +1569,7 @@ export default function AdminClient({
                 {/* Selected Champions settings */}
                 {compUnits.length > 0 && (
                   <div className="flex flex-col gap-2 bg-white/[0.01] border border-white/[0.04] rounded-lg p-3">
-                    <span className="text-[10px] text-zinc-500 font-mono uppercase font-bold">Cáº¥u hÃ¬nh tÆ°á»›ng Ä‘Ã£ chá»n:</span>
+                    <span className="text-[10px] text-zinc-500 font-mono uppercase font-bold">Cấu hình tướng đã chọn:</span>
                     <div className="flex flex-col gap-2 max-h-[220px] overflow-y-auto">
                       {compUnits.map((u, uIdx) => {
                         const champData = tftData.champions.find((c: any) => c.apiName === u.apiName);
@@ -1593,7 +1593,7 @@ export default function AdminClient({
                                       setCompUnits(updated);
                                     }}
                                   />
-                                  ðŸ‘‘ Carry
+                                  👑 Carry
                                 </label>
                                 <label className="flex items-center gap-1 text-[10px] text-zinc-400 font-mono cursor-pointer">
                                   <input
@@ -1605,7 +1605,7 @@ export default function AdminClient({
                                       setCompUnits(updated);
                                     }}
                                   />
-                                  ðŸ”„ Flex
+                                  🔄 Flex
                                 </label>
                               </div>
                             </div>
@@ -1629,7 +1629,7 @@ export default function AdminClient({
                                   }}
                                   className="bg-white/[0.03] border border-white/[0.08] rounded p-1 text-[10px] font-mono text-zinc-300 focus:outline-none"
                                 >
-                                  <option value="">Trang bá»‹ {slotIdx + 1}</option>
+                                  <option value="">Trang bị {slotIdx + 1}</option>
                                   {tftData.items.map((item: any) => (
                                     <option key={item.apiName} value={item.apiName}>{item.name}</option>
                                   ))}
@@ -1645,7 +1645,7 @@ export default function AdminClient({
 
                 {/* Traits management */}
                 <div className="flex flex-col gap-1 border-t border-white/[0.06] pt-3">
-                  <label className="text-[10px] text-zinc-400 font-mono uppercase font-bold">KÃ­ch Hoáº¡t Tá»™c / Há»‡</label>
+                  <label className="text-[10px] text-zinc-400 font-mono uppercase font-bold">Kích Hoạt Tộc / Hệ</label>
                   <div className="flex flex-wrap gap-2 mb-2">
                     {compTraits.map((trait, tIdx) => (
                       <div key={trait.apiName} className="flex items-center gap-1 px-2 py-1 bg-violet-500/10 border border-violet-500/20 text-violet-400 font-mono text-[10px] font-bold rounded">
@@ -1655,7 +1655,7 @@ export default function AdminClient({
                           onClick={() => setCompTraits(compTraits.filter(t => t.apiName !== trait.apiName))}
                           className="hover:text-rose-400 cursor-pointer ml-1"
                         >
-                          âœ•
+                          ✕
                         </button>
                       </div>
                     ))}
@@ -1672,7 +1672,7 @@ export default function AdminClient({
                       }}
                       className="bg-white/[0.03] border border-white/[0.08] rounded-lg p-2 text-xs font-mono text-zinc-300 cursor-pointer"
                     >
-                      <option value="">+ ThÃªm tá»™c/há»‡...</option>
+                      <option value="">+ Thêm tộc/hệ...</option>
                       {tftData.traits.map((t: any) => (
                         <option key={t.apiName} value={t.apiName}>{t.name}</option>
                       ))}
@@ -1701,7 +1701,7 @@ export default function AdminClient({
 
                 {/* Augments management */}
                 <div className="flex flex-col gap-1 border-t border-white/[0.06] pt-3">
-                  <label className="text-[10px] text-zinc-400 font-mono uppercase font-bold">LÃµi CÃ´ng Nghá»‡ KhuyÃªn DÃ¹ng (Æ¯u TiÃªn)</label>
+                  <label className="text-[10px] text-zinc-400 font-mono uppercase font-bold">Lõi Công Nghệ Khuyên Dùng (Ưu Tiên)</label>
                   <div className="flex flex-wrap gap-2 mb-2">
                     {compAugments.map((a, aIdx) => (
                       <div key={aIdx} className="flex items-center gap-1 px-2 py-1 bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 font-mono text-[10px] font-bold rounded">
@@ -1711,14 +1711,14 @@ export default function AdminClient({
                           onClick={() => setCompAugments(compAugments.filter((_, i) => i !== aIdx))}
                           className="hover:text-rose-400 cursor-pointer ml-1"
                         >
-                          âœ•
+                          ✕
                         </button>
                       </div>
                     ))}
                   </div>
                   <input
                     type="text"
-                    placeholder="Nháº­p tÃªn lÃµi vÃ  áº¥n Enter..."
+                    placeholder="Nhập tên lõi và ấn Enter..."
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
                         e.preventDefault();
@@ -1735,7 +1735,7 @@ export default function AdminClient({
 
                 {/* Early units */}
                 <div className="flex flex-col gap-1 border-t border-white/[0.06] pt-3">
-                  <label className="text-[10px] text-zinc-400 font-mono uppercase font-bold">Äá»™i HÃ¬nh Äáº§u Tráº­n</label>
+                  <label className="text-[10px] text-zinc-400 font-mono uppercase font-bold">Đội Hình Đầu Trận</label>
                   <div className="flex flex-wrap gap-2 mb-2">
                     {compEarlyUnits.map((u, uIdx) => (
                       <div key={uIdx} className="flex items-center gap-1 px-2 py-1 bg-amber-500/10 border border-amber-500/20 text-amber-400 font-mono text-[10px] font-bold rounded">
@@ -1745,7 +1745,7 @@ export default function AdminClient({
                           onClick={() => setCompEarlyUnits(compEarlyUnits.filter((_, i) => i !== uIdx))}
                           className="hover:text-rose-400 cursor-pointer ml-1"
                         >
-                          âœ•
+                          ✕
                         </button>
                       </div>
                     ))}
@@ -1761,7 +1761,7 @@ export default function AdminClient({
                     }}
                     className="bg-white/[0.03] border border-white/[0.08] rounded-lg p-2 text-xs font-mono text-zinc-300 cursor-pointer"
                   >
-                    <option value="">+ ThÃªm tÆ°á»›ng Ä‘áº§u tráº­n...</option>
+                    <option value="">+ Thêm tướng đầu trận...</option>
                     {tftData.champions.map((c: any) => (
                       <option key={c.apiName} value={c.apiName}>{c.name}</option>
                     ))}
@@ -1774,7 +1774,7 @@ export default function AdminClient({
                     disabled={isSubmittingComp || !compName.trim()}
                     className="flex-1 py-2.5 bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-500 hover:to-violet-400 text-white font-semibold rounded-lg transition-all cursor-pointer disabled:opacity-50 text-sm"
                   >
-                    {isSubmittingComp ? "Äang xá»­ lÃ½..." : editingCompId ? "Cáº­p Nháº­t Äá»™i HÃ¬nh" : "Táº¡o Äá»™i HÃ¬nh"}
+                    {isSubmittingComp ? "Đang xử lý..." : editingCompId ? "Cập Nhật Đội Hình" : "Tạo Đội Hình"}
                   </button>
                   {editingCompId && (
                     <button
@@ -1793,7 +1793,7 @@ export default function AdminClient({
                       }}
                       className="px-4 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-semibold rounded-lg transition-colors cursor-pointer text-sm"
                     >
-                      Há»§y
+                      Hủy
                     </button>
                   )}
                 </div>
@@ -1807,7 +1807,7 @@ export default function AdminClient({
               <div className="p-4 border-b border-white/[0.06]">
                 <h4 className="text-sm font-mono font-bold text-zinc-200 flex items-center gap-2">
                   <Crown className="w-4 h-4 text-violet-400" />
-                  Äá»™i HÃ¬nh Hot TFT ({comps.length})
+                  Đội Hình Hot TFT ({comps.length})
                 </h4>
               </div>
               {comps.length > 0 ? (
@@ -1852,7 +1852,7 @@ export default function AdminClient({
                             onClick={() => handleEditCompClick(c)}
                             className="px-2 py-1 bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.08] rounded text-[10px] font-mono font-bold text-zinc-300 transition-colors cursor-pointer"
                           >
-                            Sá»­a
+                            Sửa
                           </button>
                           <button
                             onClick={() => handleToggleCompActive(c.id, c.is_active)}
@@ -1863,13 +1863,13 @@ export default function AdminClient({
                                 : "bg-green-500/10 text-green-400 border-green-500/20 hover:bg-green-500/20"
                             )}
                           >
-                            {c.is_active ? "áº¨n" : "Hiá»‡n"}
+                            {c.is_active ? "Ẩn" : "Hiện"}
                           </button>
                           <button
                             onClick={() => handleDeleteComp(c.id, c.name)}
                             className="px-2 py-1 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 rounded text-[10px] font-mono font-bold text-rose-400 transition-colors cursor-pointer"
                           >
-                            XÃ³a
+                            Xóa
                           </button>
                         </div>
                       </div>
@@ -1878,7 +1878,7 @@ export default function AdminClient({
                 </div>
               ) : (
                 <div className="p-8 text-center text-zinc-500 text-xs font-mono">
-                  ChÆ°a cÃ³ Ä‘á»™i hÃ¬nh nÃ o.
+                  Chưa có đội hình nào.
                 </div>
               )}
             </div>
