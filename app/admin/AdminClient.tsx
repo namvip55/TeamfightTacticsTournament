@@ -261,11 +261,11 @@ export default function AdminClient({
       setNewTournamentName("");
       setNewLobbyCount(1);
       setMessage({
-        text: `ÄÃ£ táº¡o giáº£i Ä‘áº¥u "${result.tournament.name}" vá»›i ${result.lobbies?.length || 0} lobby!`,
+        text: `Đã tạo giải đấu "${result.tournament.name}" với ${result.lobbies?.length || 0} lobby!`,
         type: "success",
       });
     } else {
-      setMessage({ text: `Lá»—i: ${result.error}`, type: "error" });
+      setMessage({ text: `Lỗi: ${result.error}`, type: "error" });
     }
   };
 
@@ -277,11 +277,11 @@ export default function AdminClient({
     const result = await toggleRegistrationAction(id, !currentStatus);
     if (result.success) {
       setMessage({
-        text: `ÄÃ£ ${!currentStatus ? "Má»ž" : "ÄÃ“NG"} Ä‘Äƒng kÃ½!`,
+        text: `Đã ${!currentStatus ? "MỞ" : "ĐÓNG"} đăng ký!`,
         type: "success",
       });
     } else {
-      setMessage({ text: `Lá»—i: ${result.error}`, type: "error" });
+      setMessage({ text: `Lỗi: ${result.error}`, type: "error" });
     }
   };
 
@@ -291,9 +291,9 @@ export default function AdminClient({
     const result = await deleteTournamentAction(id);
     if (result.success) {
       if (selectedTournamentId === id) setSelectedTournamentId("");
-      setMessage({ text: `ÄÃ£ xÃ³a "${name}"!`, type: "success" });
+      setMessage({ text: `Đã xóa "${name}"!`, type: "success" });
     } else {
-      setMessage({ text: `Lá»—i: ${result.error}`, type: "error" });
+      setMessage({ text: `Lỗi: ${result.error}`, type: "error" });
     }
   };
 
@@ -344,9 +344,9 @@ export default function AdminClient({
       discordId
     );
     if (result.success) {
-      setMessage({ text: result.message || "ÄÃ£ kick!", type: "success" });
+      setMessage({ text: result.message || "Đã kick!", type: "success" });
     } else {
-      setMessage({ text: `Lá»—i: ${result.error}`, type: "error" });
+      setMessage({ text: `Lỗi: ${result.error}`, type: "error" });
     }
   };
 
@@ -362,10 +362,10 @@ export default function AdminClient({
       moveTargetLobbyId
     );
     if (result.success) {
-      setMessage({ text: result.message || "ÄÃ£ chuyá»ƒn!", type: "success" });
+      setMessage({ text: result.message || "Đã chuyển!", type: "success" });
       setMoveTargetLobbyId("");
     } else {
-      setMessage({ text: `Lá»—i: ${result.error}`, type: "error" });
+      setMessage({ text: `Lỗi: ${result.error}`, type: "error" });
     }
   };
 
@@ -390,9 +390,9 @@ export default function AdminClient({
     const result = await addLobbyAction(selectedTournamentId);
     setIsAddingLobby(false);
     if (result.success) {
-      setMessage({ text: result.message || "ÄÃ£ thÃªm!", type: "success" });
+      setMessage({ text: result.message || "Đã thêm!", type: "success" });
     } else {
-      setMessage({ text: `Lá»—i: ${result.error}`, type: "error" });
+      setMessage({ text: `Lỗi: ${result.error}`, type: "error" });
     }
   };
 
