@@ -30,6 +30,7 @@ interface GamerProfileWrapperProps {
   transactions: any[] | null;
   purchases: any[] | null;
   allStandings: any[] | null;
+  tftRank?: any;
 }
 
 export default function GamerProfileWrapper({
@@ -39,6 +40,7 @@ export default function GamerProfileWrapper({
   transactions,
   purchases,
   allStandings,
+  tftRank,
 }: GamerProfileWrapperProps) {
   // Tabs state
   const [activeSubHeader, setActiveSubHeader] = useState<"profile" | "achievements">("profile");
@@ -254,15 +256,16 @@ export default function GamerProfileWrapper({
                         </div>
                       </div>
 
-                      {/* Display name & Slogan bio */}
                       <div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 flex-wrap">
                           <h2 className="text-xl font-bold tracking-wide text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
                             {player.display_name || player.riot_id}
                           </h2>
-                          <div className="px-1.5 py-0.5 rounded bg-violet-600/30 text-violet-400 border border-violet-500/30 text-[9px] font-mono font-bold flex items-center gap-1 uppercase">
-                            <Crown className="w-2.5 h-2.5 text-violet-400" /> PRO
-                          </div>
+                          {tftRank && tftRank.tier !== "UNRANKED" && (
+                            <div className="px-1.5 py-0.5 rounded bg-violet-600/30 text-violet-400 border border-violet-500/30 text-[9px] font-mono font-bold flex items-center gap-1 uppercase">
+                              {tftRank.tier} {tftRank.rank}
+                            </div>
+                          )}
                         </div>
                         <div className="text-[10px] text-zinc-500 font-mono tracking-wider mt-0.5">
                           @{player.discord_username || player.discord_id}

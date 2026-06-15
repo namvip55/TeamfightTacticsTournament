@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { supabase } from "../lib/supabase";
 import { getPlayerSession } from "../lib/player-auth";
+import { getTftRankByPuuid } from "../lib/actions";
 import Sidebar from "../components/Sidebar";
 import GamerProfileWrapper from "./GamerProfileWrapper";
 
@@ -23,32 +24,37 @@ export default async function ProfilePage() {
     redirect("/");
   }
 
-  const { data: trophies } = await supabase
-    .from("trophies")
-    .select("*")
-    .eq("player_id", session.playerId)
-    .order("awarded_at", { ascending: false });
-
-  const { data: transactions } = await supabase
-    .from("diamond_transactions")
-    .select("*, tournaments(name)")
-    .eq("player_id", session.playerId)
-    .order("created_at", { ascending: false })
-    .limit(20);
-
-  const { data: purchases } = await supabase
-    .from("shop_purchases")
-    .select("*, shop_items(name, item_type)")
-    .eq("player_id", session.playerId)
-    .order("created_at", { ascending: false })
-    .limit(10);
-
-  // Fetch all standings for personal stats
-  const { data: allStandings } = await supabase
-    .from("standings")
-    .select("*, tournaments(name, status, mode)")
-    .eq("player_id", session.playerId)
-    .order("created_at", { ascending: false });
+  const [
+    { data: trophies },
+    { data: transactions },
+    { data: purchases },
+    { data: allStandings },
+    tftRank
+  ] = await Promise.all([
+    supabase
+      .from("trophies")
+      .select("*")
+      .eq("player_id", session.playerId)
+      .order("awarded_at", { ascending: false }),
+    supabase
+      .from("diamond_transactions")
+      .select("*, tournaments(name)")
+      .eq("player_id", session.playerId)
+      .order("created_at", { ascending: false })
+      .limit(20),
+    supabase
+      .from("shop_purchases")
+      .select("*, shop_items(name, item_type)")
+      .eq("player_id", session.playerId)
+      .order("created_at", { ascending: false })
+      .limit(10),
+    supabase
+      .from("standings")
+      .select("*, tournaments(name, status, mode)")
+      .eq("player_id", session.playerId)
+      .order("created_at", { ascending: false }),
+    player.puuid ? getTftRankByPuuid(player.puuid) : Promise.resolve(null)
+  ]);
 
   return (
     <Sidebar session={session}>
@@ -59,6 +65,7 @@ export default async function ProfilePage() {
         transactions={transactions}
         purchases={purchases}
         allStandings={allStandings}
+        tftRank={tftRank}
       />
     </Sidebar>
   );
