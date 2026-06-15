@@ -11,8 +11,7 @@ import {
   Crown,
   Sparkles,
   Sword,
-  Shield,
-  Users
+  Shield
 } from "lucide-react";
 import TrophyCase from "../../components/TrophyCase";
 import Link from "next/link";
@@ -77,13 +76,12 @@ export default function PublicPlayerWrapper({
   const diffTime = Math.abs(new Date().getTime() - createdDate.getTime());
   const daysPlayed = Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
 
-  const gameTags = [
-    "Tactician",
-    totalGames > 20 ? "Veteran" : "Challenger",
-    parseFloat(winRate) > 15 ? "Burst Carry" : "Flex Play",
-    parseFloat(top4Rate) > 50 ? "Infinite Crit" : "Balanced",
-    "TFT Arena"
-  ];
+  const gameTags: string[] = (player.social_links as Record<string, unknown>)?.tags
+    ? ((player.social_links as Record<string, unknown>).tags as string)
+        .split(",")
+        .map((t: string) => t.trim())
+        .filter(Boolean)
+    : [];
 
   const isVideoUrl = (url: string) => {
     if (!url) return false;
@@ -271,40 +269,44 @@ export default function PublicPlayerWrapper({
                       </div>
                     </div>
 
-                    {/* Gaming Badges Tags */}
-                    <div className="flex flex-wrap gap-1.5 max-w-md">
-                      {gameTags.map((tag, idx) => (
-                        <span 
-                          key={tag} 
-                          className={`px-2 py-0.5 text-[9px] font-mono tracking-wider font-semibold rounded uppercase border ${
-                            idx === 0 
-                              ? "bg-amber-500/10 border-amber-500/30 text-amber-400"
-                              : idx === 1
-                              ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-400"
-                              : idx === 2
-                              ? "bg-violet-500/10 border-violet-500/30 text-violet-400"
-                              : "bg-white/[0.02] border-white/[0.08] text-zinc-400"
-                          }`}
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-
-                    {/* Bio quote */}
-                    <div className="flex items-center gap-2 bg-white/[0.02] border border-white/[0.06] rounded-lg p-2.5 max-w-sm">
-                      <div className="text-xs text-zinc-300 italic font-mono truncate">
-                        "{player.bio || "Người chơi đấu trường chân lý..."}"
+                    {/* Gaming Badges Tags - only shown if user has configured them */}
+                    {gameTags.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 max-w-md">
+                        {gameTags.map((tag: string, idx: number) => (
+                          <span 
+                            key={tag} 
+                            className={`px-2 py-0.5 text-[9px] font-mono tracking-wider font-semibold rounded uppercase border ${
+                              idx === 0 
+                                ? "bg-amber-500/10 border-amber-500/30 text-amber-400"
+                                : idx === 1
+                                ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-400"
+                                : idx === 2
+                                ? "bg-violet-500/10 border-violet-500/30 text-violet-400"
+                                : "bg-white/[0.02] border-white/[0.08] text-zinc-400"
+                            }`}
+                          >
+                            {tag}
+                          </span>
+                        ))}
                       </div>
-                    </div>
+                    )}
 
-                    {/* Ornate Medals Shields */}
+                    {/* Bio quote - only show if bio exists */}
+                    {player.bio && (
+                      <div className="flex items-center gap-2 bg-white/[0.02] border border-white/[0.06] rounded-lg p-2.5 max-w-sm">
+                        <div className="text-xs text-zinc-300 italic font-mono truncate">
+                          "{player.bio}"
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Medals shields row - only real player data */}
                     <div className="flex items-center gap-4 mt-1 border-t border-b border-white/[0.06] py-3">
                       {[
-                        { title: "Season", val: "S12", icon: Sparkles, color: "text-amber-400" },
-                        { title: "History", val: "Top 4", icon: Shield, color: "text-cyan-400" },
-                        { title: "Marks", val: trophies?.length || 0, icon: Crown, color: "text-violet-400" },
-                        { title: "Peak", val: avgPlacement !== "N/A" ? `Placement ${avgPlacement}` : "N/A", icon: Flame, color: "text-rose-400" }
+                        { title: "Giải Đấu", val: standings?.length || 0, icon: Sparkles, color: "text-amber-400" },
+                        { title: "Top 4 Rate", val: `${top4Rate}%`, icon: Shield, color: "text-cyan-400" },
+                        { title: "Cúp", val: trophies?.length || 0, icon: Crown, color: "text-violet-400" },
+                        { title: "Vị Trí TB", val: avgPlacement, icon: Flame, color: "text-rose-400" }
                       ].map((item, idx) => (
                         <div key={idx} className="flex flex-col items-center text-center shrink-0">
                           <div className={`w-10 h-10 rounded-full bg-white/[0.02] border border-white/[0.08] flex items-center justify-center shadow-lg relative`}>
@@ -334,27 +336,19 @@ export default function PublicPlayerWrapper({
 
                   </div>
 
-                  {/* Online display / Guild */}
+                  {/* Diamond & Points summary at the bottom */}
                   <div className="mt-8 border-t border-white/[0.06] pt-4">
-                    <div className="text-[9px] text-zinc-500 font-mono uppercase tracking-wider mb-2 flex items-center gap-1">
-                      <Users className="w-3 h-3" /> Guild & Friends
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <div className="flex -space-x-2.5 overflow-hidden">
-                        {[
-                          "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80",
-                          "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=100&q=80",
-                          "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80",
-                        ].map((imgUrl, i) => (
-                          <img 
-                            key={i} 
-                            src={imgUrl} 
-                            alt="Friend avatar" 
-                            className="inline-block h-6 w-6 rounded-full ring-2 ring-[#0d0c15] object-cover" 
-                          />
-                        ))}
+                    <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-1.5 text-cyan-400">
+                        <Gem className="w-3.5 h-3.5" />
+                        <span className="text-sm font-bold font-mono">{player.diamonds || 0}</span>
+                        <span className="text-[9px] text-zinc-500 font-mono uppercase">Diamonds</span>
                       </div>
-                      <span className="text-[9px] text-zinc-500 font-mono ml-2">Online</span>
+                      <div className="flex items-center gap-1.5 text-green-400">
+                        <Trophy className="w-3.5 h-3.5" />
+                        <span className="text-sm font-bold font-mono">{totalPoints}</span>
+                        <span className="text-[9px] text-zinc-500 font-mono uppercase">Tổng điểm</span>
+                      </div>
                     </div>
                   </div>
 

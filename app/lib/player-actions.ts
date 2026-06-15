@@ -122,6 +122,83 @@ export async function uploadAvatarAction(formData: FormData) {
   }
 }
 
+/**
+ * Upload hình nền hoặc video nền cho profile (giới hạn 10MB)
+ */
+export async function uploadProfileBgAction(formData: FormData) {
+  const session = await requirePlayerAuth();
+
+  try {
+    const file = formData.get("bg_file") as File;
+    if (!file) {
+      throw new Error("Không tìm thấy file tải lên");
+    }
+
+    // Validate file type (Images + Videos)
+    const allowedTypes = [
+      "image/png", "image/jpeg", "image/webp", "image/gif",
+      "video/mp4", "video/webm", "video/ogg"
+    ];
+    if (!allowedTypes.includes(file.type)) {
+      throw new Error("Chỉ chấp nhận file ảnh (PNG, JPG, WebP, GIF) hoặc video (MP4, WebM)");
+    }
+
+    // Validate size (max 10MB)
+    const MAX_SIZE = 10 * 1024 * 1024; // 10MB
+    if (file.size > MAX_SIZE) {
+      throw new Error("Kích thước file tải lên tối đa là 10MB");
+    }
+
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+
+    // Get file extension
+    let ext = "mp4";
+    if (file.type.startsWith("image/")) {
+      ext = file.type.split("/")[1] || "png";
+    } else if (file.type.startsWith("video/")) {
+      ext = file.type.split("/")[1] || "mp4";
+    }
+
+    const filePath = `${session.discordId}/bg_visual.${ext}`;
+
+    // Upload to Supabase Storage ('avatars' bucket)
+    const { error: uploadError } = await supabase.storage
+      .from("avatars")
+      .upload(filePath, buffer, {
+        contentType: file.type,
+        upsert: true,
+      });
+
+    if (uploadError) throw uploadError;
+
+    // Get public URL
+    const { data: urlData } = supabase.storage
+      .from("avatars")
+      .getPublicUrl(filePath);
+
+    const bgUrl = `${urlData.publicUrl}?t=${Date.now()}`;
+
+    // Update player record
+    const { error: updateError } = await supabase
+      .from("players")
+      .update({
+        profile_bg_url: bgUrl,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", session.playerId);
+
+    if (updateError) throw updateError;
+
+    revalidatePath("/profile");
+    revalidatePath(`/player/${session.playerId}`);
+    return { success: true, bgUrl };
+  } catch (error: any) {
+    console.error("Error uploading profile background:", error);
+    return { success: false, error: error.message };
+  }
+}
+
 // ----------------------------------------------------
 // Diamond Actions (Admin)
 // ----------------------------------------------------

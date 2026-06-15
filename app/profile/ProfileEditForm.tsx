@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { updateProfileAction } from "../lib/player-actions";
+import { updateProfileAction, uploadProfileBgAction } from "../lib/player-actions";
 import { cn } from "@/lib/utils";
-import { User, Loader2, CheckCircle2, XCircle } from "lucide-react";
+import { User, Loader2, CheckCircle2, XCircle, Upload, Film } from "lucide-react";
 
 interface ProfileEditFormProps {
   displayName: string;
@@ -22,20 +22,47 @@ export default function ProfileEditForm({
   const [bio, setBio] = useState(initialBio);
   const [twitter, setTwitter] = useState(initialLinks.twitter || "");
   const [facebook, setFacebook] = useState(initialLinks.facebook || "");
+  const [tags, setTags] = useState(initialLinks.tags || "");
   const [profileBgUrl, setProfileBgUrl] = useState(initialBgUrl || "");
   const [isSaving, setIsSaving] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
   const [message, setMessage] = useState<{
     text: string;
     type: "success" | "error";
   } | null>(null);
 
+  const handleBgUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    setUploadError("");
+    setMessage(null);
+
+    const formData = new FormData();
+    formData.append("bg_file", file);
+
+    const result = await uploadProfileBgAction(formData);
+    setIsUploading(false);
+
+    if (result.success && result.bgUrl) {
+      setProfileBgUrl(result.bgUrl);
+      setMessage({ text: "Tải lên file nền thành công!", type: "success" });
+    } else {
+      setUploadError(result.error || "Lỗi tải lên file nền");
+    }
+  };
+
   const handleSave = async () => {
     setIsSaving(true);
     setMessage(null);
 
-    const socialLinks: Record<string, string> = {};
-    if (twitter.trim()) socialLinks.twitter = twitter.trim();
-    if (facebook.trim()) socialLinks.facebook = facebook.trim();
+    const socialLinks: Record<string, string> = {
+      twitter: twitter.trim(),
+      facebook: facebook.trim(),
+      tags: tags.trim()
+    };
 
     const result = await updateProfileAction({
       display_name: displayName,
@@ -118,18 +145,73 @@ export default function ProfileEditForm({
 
         <div className="flex flex-col gap-1.5">
           <label className="text-[10px] text-zinc-500 font-mono uppercase font-bold">
-            Link Ảnh / Video Nền Trang Cá Nhân
+            Nhãn Cá Nhân (Gồm nhiều nhãn, ngăn cách bằng dấu phẩy)
           </label>
           <input
             type="text"
-            value={profileBgUrl}
-            onChange={(e) => setProfileBgUrl(e.target.value)}
-            placeholder="https://domain.com/asset.mp4 hoặc .png (Hỗ trợ lặp video)"
+            value={tags}
+            onChange={(e) => setTags(e.target.value)}
+            placeholder="Ví dụ: Challenger, Flex Player, Fast 8..."
             className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2.5 text-sm font-mono text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:border-violet-500/50"
           />
           <span className="text-[9px] text-zinc-500 font-mono">
-            *Nhập URL ảnh hoặc video (.mp4, .webm...) để hiển thị trên thẻ anh hùng của bạn. Trống sẽ hiện nhân vật Swordsmaster Shroom mặc định.
+            *Thiết lập các nhãn hiển thị trên thẻ anh hùng của bạn (ví dụ: Tactician, Challenger, Flex Play...). Trống sẽ không hiển thị nhãn nào.
           </span>
+        </div>
+
+        <div className="flex flex-col gap-2 bg-white/[0.01] border border-white/[0.06] rounded-xl p-4">
+          <label className="text-[10px] text-zinc-400 font-mono uppercase font-bold tracking-wider">
+            Hình Nền / Video Trang Cá Nhân
+          </label>
+          
+          <div className="flex flex-col sm:flex-row gap-4 items-center">
+            {/* File Upload Button */}
+            <div className="w-full sm:w-auto">
+              <label className="flex items-center justify-center gap-2 px-4 py-2.5 bg-white/[0.04] border border-white/[0.08] hover:bg-white/[0.08] hover:border-violet-500/30 text-xs text-zinc-300 font-bold font-mono rounded-lg cursor-pointer transition-all duration-200">
+                {isUploading ? (
+                  <Loader2 className="w-4 h-4 text-violet-400 animate-spin" />
+                ) : (
+                  <Upload className="w-4 h-4 text-violet-400" />
+                )}
+                {isUploading ? "Đang tải lên..." : "Tải Lên File (Max 10MB)"}
+                <input
+                  type="file"
+                  accept="image/*,video/mp4,video/webm,video/ogg"
+                  onChange={handleBgUpload}
+                  disabled={isUploading}
+                  className="hidden"
+                />
+              </label>
+            </div>
+            
+            <div className="text-[10px] text-zinc-500 font-mono text-center sm:text-left">
+              Hỗ trợ tải lên ảnh (PNG, JPG, GIF...) hoặc video vòng lặp (.mp4, .webm). Giới hạn 10MB.
+            </div>
+          </div>
+
+          <div className="relative flex items-center justify-center py-2.5">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-white/[0.06]" />
+            </div>
+            <span className="relative px-3 bg-[#0d0c15] text-[9px] text-zinc-500 font-mono uppercase">Hoặc dán URL liên kết</span>
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <input
+              type="text"
+              value={profileBgUrl}
+              onChange={(e) => setProfileBgUrl(e.target.value)}
+              placeholder="https://domain.com/background.mp4 hoặc .png"
+              className="w-full bg-white/[0.02] border border-white/[0.08] rounded-lg px-3 py-2 text-xs font-mono text-zinc-300 placeholder:text-zinc-600 focus:outline-none focus:border-violet-500/50"
+            />
+          </div>
+
+          {uploadError && (
+            <div className="p-3 rounded-lg border border-rose-500/20 bg-rose-500/10 text-rose-400 text-xs font-mono flex items-center gap-2 mt-2">
+              <XCircle className="w-3.5 h-3.5" />
+              {uploadError}
+            </div>
+          )}
         </div>
 
         {message && (
