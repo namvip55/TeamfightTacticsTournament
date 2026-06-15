@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { updateProfileAction, uploadProfileBgAction } from "../lib/player-actions";
+import { useState, useRef } from "react";
+import { updateProfileAction } from "../lib/player-actions";
 import { cn } from "@/lib/utils";
 import { User, Loader2, CheckCircle2, XCircle, Upload, Film } from "lucide-react";
 
@@ -26,31 +26,79 @@ export default function ProfileEditForm({
   const [profileBgUrl, setProfileBgUrl] = useState(initialBgUrl || "");
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadError, setUploadError] = useState("");
   const [message, setMessage] = useState<{
     text: string;
     type: "success" | "error";
   } | null>(null);
+  const xhrRef = useRef<XMLHttpRequest | null>(null);
 
   const handleBgUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // Client-side validation
+    const MAX_SIZE = 10 * 1024 * 1024;
+    if (file.size > MAX_SIZE) {
+      setUploadError("Kích thước file tối đa là 10MB");
+      return;
+    }
+
     setIsUploading(true);
+    setUploadProgress(0);
     setUploadError("");
     setMessage(null);
 
     const formData = new FormData();
     formData.append("bg_file", file);
 
-    const result = await uploadProfileBgAction(formData);
-    setIsUploading(false);
+    const xhr = new XMLHttpRequest();
+    xhrRef.current = xhr;
 
-    if (result.success && result.bgUrl) {
-      setProfileBgUrl(result.bgUrl);
-      setMessage({ text: "Tải lên file nền thành công!", type: "success" });
-    } else {
-      setUploadError(result.error || "Lỗi tải lên file nền");
+    xhr.upload.addEventListener("progress", (event) => {
+      if (event.lengthComputable) {
+        const pct = Math.round((event.loaded / event.total) * 100);
+        setUploadProgress(pct);
+      }
+    });
+
+    xhr.addEventListener("load", () => {
+      xhrRef.current = null;
+      setIsUploading(false);
+      try {
+        const result = JSON.parse(xhr.responseText);
+        if (xhr.status === 200 && result.success && result.bgUrl) {
+          setProfileBgUrl(result.bgUrl);
+          setUploadProgress(100);
+          setMessage({ text: "Tải lên file nền thành công!", type: "success" });
+        } else {
+          setUploadError(result.error || "Lỗi tải lên file nền");
+        }
+      } catch {
+        setUploadError("Lỗi xử lý phản hồi từ server");
+      }
+    });
+
+    xhr.addEventListener("error", () => {
+      xhrRef.current = null;
+      setIsUploading(false);
+      setUploadError("Lỗi kết nối mạng khi tải lên");
+    });
+
+    xhr.addEventListener("abort", () => {
+      xhrRef.current = null;
+      setIsUploading(false);
+      setUploadProgress(0);
+    });
+
+    xhr.open("POST", "/api/upload-bg");
+    xhr.send(formData);
+  };
+
+  const handleCancelUpload = () => {
+    if (xhrRef.current) {
+      xhrRef.current.abort();
     }
   };
 
@@ -188,6 +236,30 @@ export default function ProfileEditForm({
               Hỗ trợ tải lên ảnh (PNG, JPG, GIF...) hoặc video vòng lặp (.mp4, .webm). Giới hạn 10MB.
             </div>
           </div>
+
+          {isUploading && (
+            <div className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg p-3 flex flex-col gap-2 mt-1">
+              <div className="flex justify-between items-center text-xs font-mono text-zinc-400">
+                <span className="flex items-center gap-1.5">
+                  <Loader2 className="w-3.5 h-3.5 text-violet-400 animate-spin" />
+                  Đang tải lên: {uploadProgress}%
+                </span>
+                <button
+                  type="button"
+                  onClick={handleCancelUpload}
+                  className="text-rose-400 hover:text-rose-300 font-bold hover:underline"
+                >
+                  Hủy
+                </button>
+              </div>
+              <div className="w-full h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-violet-500 to-fuchsia-500 transition-all duration-150"
+                  style={{ width: `${uploadProgress}%` }}
+                />
+              </div>
+            </div>
+          )}
 
           <div className="relative flex items-center justify-center py-2.5">
             <div className="absolute inset-0 flex items-center">
