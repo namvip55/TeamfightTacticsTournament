@@ -16,6 +16,7 @@ export async function updateProfileAction(data: {
   display_name?: string;
   bio?: string;
   social_links?: Record<string, string>;
+  profile_bg_url?: string;
 }) {
   const session = await requirePlayerAuth();
 
@@ -32,6 +33,9 @@ export async function updateProfileAction(data: {
     }
     if (data.social_links !== undefined) {
       updates.social_links = data.social_links;
+    }
+    if (data.profile_bg_url !== undefined) {
+      updates.profile_bg_url = data.profile_bg_url.trim() || null;
     }
 
     const { error } = await supabase

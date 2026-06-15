@@ -9,17 +9,20 @@ interface ProfileEditFormProps {
   displayName: string;
   bio: string;
   socialLinks: Record<string, string>;
+  profileBgUrl: string;
 }
 
 export default function ProfileEditForm({
   displayName: initialName,
   bio: initialBio,
   socialLinks: initialLinks,
+  profileBgUrl: initialBgUrl,
 }: ProfileEditFormProps) {
   const [displayName, setDisplayName] = useState(initialName);
   const [bio, setBio] = useState(initialBio);
   const [twitter, setTwitter] = useState(initialLinks.twitter || "");
   const [facebook, setFacebook] = useState(initialLinks.facebook || "");
+  const [profileBgUrl, setProfileBgUrl] = useState(initialBgUrl || "");
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState<{
     text: string;
@@ -38,6 +41,7 @@ export default function ProfileEditForm({
       display_name: displayName,
       bio,
       social_links: socialLinks,
+      profile_bg_url: profileBgUrl,
     });
 
     setIsSaving(false);
@@ -110,6 +114,22 @@ export default function ProfileEditForm({
               className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2.5 text-sm font-mono text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:border-violet-500/50"
             />
           </div>
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <label className="text-[10px] text-zinc-500 font-mono uppercase font-bold">
+            Link Ảnh / Video Nền Trang Cá Nhân
+          </label>
+          <input
+            type="text"
+            value={profileBgUrl}
+            onChange={(e) => setProfileBgUrl(e.target.value)}
+            placeholder="https://domain.com/asset.mp4 hoặc .png (Hỗ trợ lặp video)"
+            className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2.5 text-sm font-mono text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:border-violet-500/50"
+          />
+          <span className="text-[9px] text-zinc-500 font-mono">
+            *Nhập URL ảnh hoặc video (.mp4, .webm...) để hiển thị trên thẻ anh hùng của bạn. Trống sẽ hiện nhân vật Swordsmaster Shroom mặc định.
+          </span>
         </div>
 
         {message && (
