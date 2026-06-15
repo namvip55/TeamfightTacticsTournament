@@ -14,50 +14,55 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Chưa đăng nhập" }, { status: 401 });
     }
 
-    const formData = await req.formData();
-    const file = formData.get("bg_file") as File;
-    if (!file) {
-      return NextResponse.json({ error: "Không tìm thấy file" }, { status: 400 });
-    }
+    const contentType = req.headers.get("content-type") || "";
+    const fileName = decodeURIComponent(req.headers.get("x-file-name") || "bg_visual");
 
     // Validate file type
     const allowedTypes = [
       "image/png", "image/jpeg", "image/webp", "image/gif",
       "video/mp4", "video/webm", "video/ogg"
     ];
-    if (!allowedTypes.includes(file.type)) {
+    if (!allowedTypes.includes(contentType)) {
       return NextResponse.json(
         { error: "Chỉ chấp nhận ảnh (PNG, JPG, WebP, GIF) hoặc video (MP4, WebM)" },
         { status: 400 }
       );
     }
 
-    // Validate size (max 10MB)
+    // Validate size using Content-Length header if available
+    const contentLength = parseInt(req.headers.get("content-length") || "0", 10);
     const MAX_SIZE = 10 * 1024 * 1024;
-    if (file.size > MAX_SIZE) {
+    if (contentLength > MAX_SIZE) {
       return NextResponse.json(
         { error: "Kích thước file tối đa là 10MB" },
         { status: 400 }
       );
     }
 
+    // Convert request body directly to ArrayBuffer
+    const arrayBuffer = await req.arrayBuffer();
+
+    if (arrayBuffer.byteLength > MAX_SIZE) {
+      return NextResponse.json(
+        { error: "Kích thước file thực tế vượt quá 10MB" },
+        { status: 400 }
+      );
+    }
+
     // Get extension
     let ext = "mp4";
-    if (file.type.startsWith("image/")) {
-      ext = file.type.split("/")[1] || "png";
-    } else if (file.type.startsWith("video/")) {
-      ext = file.type.split("/")[1] || "mp4";
+    if (contentType.startsWith("image/")) {
+      ext = contentType.split("/")[1] || "png";
+    } else if (contentType.startsWith("video/")) {
+      ext = contentType.split("/")[1] || "mp4";
     }
 
     const filePath = `${session.discordId}/bg_visual.${ext}`;
 
-    // Convert to ArrayBuffer and upload
-    const arrayBuffer = await file.arrayBuffer();
-
     const { error: uploadError } = await supabase.storage
       .from("avatars")
       .upload(filePath, arrayBuffer, {
-        contentType: file.type,
+        contentType: contentType,
         upsert: true,
       });
 

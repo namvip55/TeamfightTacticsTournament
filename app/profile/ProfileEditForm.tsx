@@ -50,9 +50,6 @@ export default function ProfileEditForm({
     setUploadError("");
     setMessage(null);
 
-    const formData = new FormData();
-    formData.append("bg_file", file);
-
     const xhr = new XMLHttpRequest();
     xhrRef.current = xhr;
 
@@ -93,7 +90,9 @@ export default function ProfileEditForm({
     });
 
     xhr.open("POST", "/api/upload-bg");
-    xhr.send(formData);
+    xhr.setRequestHeader("Content-Type", file.type);
+    xhr.setRequestHeader("X-File-Name", encodeURIComponent(file.name));
+    xhr.send(file);
   };
 
   const handleCancelUpload = () => {
