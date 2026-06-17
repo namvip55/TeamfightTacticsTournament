@@ -51,6 +51,7 @@ import {
   CheckCircle2,
   XCircle,
   Swords,
+  Search,
 } from "lucide-react";
 
 interface Tournament {
@@ -131,6 +132,7 @@ interface Comp {
     items: string[];
     isCarry?: boolean;
     isFlex?: boolean;
+    position?: number;
   }[];
   traits: {
     apiName: string;
@@ -207,13 +209,15 @@ export default function AdminClient({
   const [compCarryApiName, setCompCarryApiName] = useState("");
   const [compCoverImageUrl, setCompCoverImageUrl] = useState("");
   const [compIsActive, setCompIsActive] = useState(true);
-  const [compUnits, setCompUnits] = useState<{ apiName: string; name: string; isCarry: boolean; isFlex: boolean; items: string[] }[]>([]);
+  const [compUnits, setCompUnits] = useState<{ apiName: string; name: string; isCarry: boolean; isFlex: boolean; items: string[]; position?: number }[]>([]);
   const [compTraits, setCompTraits] = useState<{ apiName: string; name: string; count: number }[]>([]);
   const [compAugments, setCompAugments] = useState<{ name: string }[]>([]);
   const [compEarlyUnits, setCompEarlyUnits] = useState<{ apiName: string; name: string }[]>([]);
   const [editingCompId, setEditingCompId] = useState<string | null>(null);
   const [isSubmittingComp, setIsSubmittingComp] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [selectedSlot, setSelectedSlot] = useState<number | null>(null);
+  const [champSearch, setChampSearch] = useState("");
 
   const [newItemName, setNewItemName] = useState("");
   const [newItemDesc, setNewItemDesc] = useState("");
@@ -478,6 +482,7 @@ export default function AdminClient({
       setCompAugments([]);
       setCompEarlyUnits([]);
       setEditingCompId(null);
+      setSelectedSlot(null);
     } else {
       setMessage({ text: `Lỗi: ${result.error}`, type: "error" });
     }
@@ -491,10 +496,11 @@ export default function AdminClient({
     setCompCarryApiName(comp.carry_api_name || "");
     setCompCoverImageUrl(comp.cover_image_url || "");
     setCompIsActive(comp.is_active);
-    setCompUnits((comp.units || []).map(u => ({ ...u, isCarry: u.isCarry ?? false, isFlex: u.isFlex ?? false })));
+    setCompUnits((comp.units || []).map((u, idx) => ({ ...u, isCarry: u.isCarry ?? false, isFlex: u.isFlex ?? false, position: u.position !== undefined ? u.position : idx })));
     setCompTraits(comp.traits || []);
     setCompAugments(comp.augments || []);
     setCompEarlyUnits(comp.early_units || []);
+    setSelectedSlot(null);
     setActiveTab("comps"); // Switch tab
   };
 
@@ -1530,118 +1536,331 @@ export default function AdminClient({
                   </select>
                 </div>
 
-                {/* Grid champions selector */}
-                <div className="flex flex-col gap-1 border-t border-white/[0.06] pt-3">
-                  <label className="text-[10px] text-zinc-400 font-mono uppercase font-bold mb-2">Chọn Tướng Cho Đội Hình</label>
-                  <div className="grid grid-cols-6 sm:grid-cols-8 gap-2 max-h-[180px] overflow-y-auto p-1 bg-black/20 rounded-lg border border-white/[0.04]">
-                    {tftData.champions.map((c: any) => {
-                      const isSelected = compUnits.some(u => u.apiName === c.apiName);
-                      return (
-                        <button
-                          key={c.apiName}
-                          type="button"
-                          onClick={() => {
-                            if (isSelected) {
-                              setCompUnits(compUnits.filter(u => u.apiName !== c.apiName));
-                            } else {
-                              setCompUnits([...compUnits, { apiName: c.apiName, name: c.name, isCarry: false, isFlex: false, items: [] }]);
-                            }
-                          }}
-                          title={c.name}
-                          className={cn(
-                            "relative flex items-center justify-center p-1 rounded border transition-all hover:scale-105 aspect-square",
-                            isSelected
-                              ? "border-violet-500 bg-violet-500/20"
-                              : "border-white/[0.06] bg-white/[0.01] grayscale hover:grayscale-0"
-                          )}
-                        >
-                          {c.image ? (
-                            <img src={c.image} alt={c.name} className="w-full h-full object-cover rounded" />
-                          ) : (
-                            <span className="text-[8px] line-clamp-1">{c.name}</span>
-                          )}
-                        </button>
-                      );
-                    })}
+                {/* 7x4 TFT Hexagonal Grid Editor */}
+                <div className="flex flex-col gap-3 border-t border-white/[0.06] pt-4">
+                  <div className="flex items-center justify-between">
+                    <label className="text-[10px] text-zinc-400 font-mono uppercase font-bold">
+                      Bàn cờ xếp tướng (TFT Board 7x4)
+                    </label>
+                    {selectedSlot !== null && (
+                      <button
+                        type="button"
+                        onClick={() => setSelectedSlot(null)}
+                        className="text-[9px] font-mono text-zinc-500 hover:text-zinc-300 cursor-pointer"
+                      >
+                        Bỏ chọn ô
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Render the 7x4 hex grid */}
+                  <div className="flex flex-col gap-1.5 p-4 bg-black/40 rounded-xl border border-white/[0.04] overflow-x-auto relative select-none">
+                    {(() => {
+                      // Map positions
+                      const slots = Array(28).fill(null);
+                      compUnits.forEach((u) => {
+                        const pos = u.position !== undefined ? u.position : -1;
+                        if (pos >= 0 && pos < 28) {
+                          slots[pos] = u;
+                        }
+                      });
+
+                      return [0, 1, 2, 3].map((rowIdx) => {
+                        const isOdd = rowIdx % 2 !== 0;
+                        return (
+                          <div
+                            key={rowIdx}
+                            className={cn(
+                              "flex justify-center gap-2",
+                              isOdd ? "translate-x-[36px]" : ""
+                            )}
+                            style={{ marginTop: rowIdx > 0 ? "-15px" : "0px" }}
+                          >
+                            {[0, 1, 2, 3, 4, 5, 6].map((colIdx) => {
+                              const slotIdx = rowIdx * 7 + colIdx;
+                              const unit = slots[slotIdx];
+                              const champ = unit ? tftData.champions.find((c: any) => c.apiName === unit.apiName) : null;
+                              const isSlotSelected = selectedSlot === slotIdx;
+
+                              const costColors: Record<number, string> = {
+                                1: "border-zinc-500",
+                                2: "border-emerald-500",
+                                3: "border-blue-500",
+                                4: "border-purple-500",
+                                5: "border-amber-500",
+                              };
+                              const costBorder = champ ? costColors[champ.cost] || "border-zinc-500" : "border-zinc-800/40";
+
+                              return (
+                                <button
+                                  key={colIdx}
+                                  type="button"
+                                  onClick={() => setSelectedSlot(slotIdx)}
+                                  className="relative flex flex-col items-center focus:outline-none cursor-pointer"
+                                  style={{ width: "66px", height: "72px" }}
+                                >
+                                  <div
+                                    className={cn(
+                                      "w-[66px] h-[72px] flex items-center justify-center transition-all duration-200 relative",
+                                      isSlotSelected
+                                        ? "scale-105"
+                                        : unit
+                                        ? "scale-95 hover:scale-100"
+                                        : "scale-90 hover:scale-95"
+                                    )}
+                                    style={{
+                                      clipPath: "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)",
+                                    }}
+                                  >
+                                    {unit && champ ? (
+                                      <>
+                                        {/* Champion Image */}
+                                        {champ.image ? (
+                                          <img
+                                            src={champ.image}
+                                            alt={champ.name}
+                                            className="w-full h-full object-cover"
+                                          />
+                                        ) : (
+                                          <div className="w-full h-full bg-zinc-800 flex items-center justify-center text-[9px] text-zinc-400">
+                                            {unit.name}
+                                          </div>
+                                        )}
+
+                                        {/* Border outline */}
+                                        <div
+                                          className={cn(
+                                            "absolute inset-0 border-2 pointer-events-none",
+                                            isSlotSelected
+                                              ? "border-violet-500 shadow-[inset_0_0_8px_rgba(139,92,246,0.8)]"
+                                              : unit.isCarry
+                                              ? "border-amber-400 shadow-[inset_0_0_8px_rgba(245,158,11,0.5)]"
+                                              : unit.isFlex
+                                              ? "border-emerald-400 shadow-[inset_0_0_8px_rgba(34,197,94,0.5)]"
+                                              : costBorder
+                                          )}
+                                          style={{
+                                            clipPath: "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)",
+                                          }}
+                                        />
+
+                                        {/* Champion Name Gradient Overlay */}
+                                        <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent pt-3 pb-1 flex flex-col items-center justify-end">
+                                          <span className="text-[8px] font-bold text-white font-sans text-center leading-none px-0.5 truncate max-w-[58px]">
+                                            {champ.name || unit.name}
+                                          </span>
+                                        </div>
+                                      </>
+                                    ) : (
+                                      // Empty slot
+                                      <div
+                                        className={cn(
+                                          "w-full h-full border transition-all",
+                                          isSlotSelected
+                                            ? "bg-violet-500/10 border-violet-500"
+                                            : "bg-[#141420]/30 border-white/[0.04] hover:bg-white/[0.02] hover:border-white/[0.08]"
+                                        )}
+                                        style={{
+                                          clipPath: "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)",
+                                        }}
+                                      />
+                                    )}
+                                  </div>
+
+                                  {/* Items display overlay on grid */}
+                                  {unit && unit.items && unit.items.length > 0 && (
+                                    <div className="absolute -bottom-1 z-25 flex gap-0.5 scale-75 bg-black/60 px-1 py-0.5 rounded-full border border-white/10">
+                                      {unit.items.slice(0, 3).map((itemApi: string, idx: number) => {
+                                        const item = tftData.items.find((i: any) => i.apiName === itemApi) || { name: itemApi, image: "" };
+                                        return (
+                                          <img
+                                            key={idx}
+                                            src={item.image || "/api/placeholder/16/16"}
+                                            alt={item.name || ""}
+                                            className="w-[14px] h-[14px] object-cover rounded border border-white/25"
+                                          />
+                                        );
+                                      })}
+                                    </div>
+                                  )}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        );
+                      });
+                    })()}
                   </div>
                 </div>
 
-                {/* Selected Champions settings */}
-                {compUnits.length > 0 && (
-                  <div className="flex flex-col gap-2 bg-white/[0.01] border border-white/[0.04] rounded-lg p-3">
-                    <span className="text-[10px] text-zinc-500 font-mono uppercase font-bold">Cấu hình tướng đã chọn:</span>
-                    <div className="flex flex-col gap-2 max-h-[220px] overflow-y-auto">
-                      {compUnits.map((u, uIdx) => {
-                        const champData = tftData.champions.find((c: any) => c.apiName === u.apiName);
-                        return (
-                          <div key={u.apiName} className="flex flex-col gap-2 p-2 bg-black/20 border border-white/[0.04] rounded bg-white/[0.02]">
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-2">
-                                {champData?.image && (
-                                  <img src={champData.image} alt={u.name} className="w-5 h-5 object-cover rounded" />
-                                )}
-                                <span className="text-xs font-bold font-mono text-zinc-300">{u.name}</span>
-                              </div>
-                              <div className="flex items-center gap-3">
-                                <label className="flex items-center gap-1 text-[10px] text-zinc-400 font-mono cursor-pointer">
-                                  <input
-                                    type="checkbox"
-                                    checked={u.isCarry}
-                                    onChange={(e) => {
-                                      const updated = [...compUnits];
-                                      updated[uIdx].isCarry = e.target.checked;
-                                      setCompUnits(updated);
-                                    }}
-                                  />
-                                  👑 Carry
-                                </label>
-                                <label className="flex items-center gap-1 text-[10px] text-zinc-400 font-mono cursor-pointer">
-                                  <input
-                                    type="checkbox"
-                                    checked={u.isFlex}
-                                    onChange={(e) => {
-                                      const updated = [...compUnits];
-                                      updated[uIdx].isFlex = e.target.checked;
-                                      setCompUnits(updated);
-                                    }}
-                                  />
-                                  🔄 Flex
-                                </label>
-                              </div>
-                            </div>
+                {/* Sub-panel depending on selectedSlot */}
+                {selectedSlot !== null && (() => {
+                  const slots = Array(28).fill(null);
+                  compUnits.forEach((u) => {
+                    const pos = u.position !== undefined ? u.position : -1;
+                    if (pos >= 0 && pos < 28) {
+                      slots[pos] = u;
+                    }
+                  });
+                  const unit = slots[selectedSlot];
+                  const uIdx = compUnits.findIndex(u => u.position === selectedSlot);
 
-                            {/* Item selects */}
-                            <div className="grid grid-cols-3 gap-2">
-                              {[0, 1, 2].map((slotIdx) => (
-                                <select
-                                  key={slotIdx}
-                                  value={u.items[slotIdx] || ""}
-                                  onChange={(e) => {
-                                    const updated = [...compUnits];
-                                    const items = [...(u.items || [])];
-                                    if (e.target.value) {
-                                      items[slotIdx] = e.target.value;
-                                    } else {
-                                      items.splice(slotIdx, 1);
-                                    }
-                                    updated[uIdx].items = items.filter(Boolean);
-                                    setCompUnits(updated);
-                                  }}
-                                  className="bg-white/[0.03] border border-white/[0.08] rounded p-1 text-[10px] font-mono text-zinc-300 focus:outline-none"
-                                >
-                                  <option value="">Trang bị {slotIdx + 1}</option>
-                                  {tftData.items.map((item: any) => (
-                                    <option key={item.apiName} value={item.apiName}>{item.name}</option>
-                                  ))}
-                                </select>
-                              ))}
-                            </div>
+                  if (unit) {
+                    // UNIT SETTINGS
+                    const champData = tftData.champions.find((c: any) => c.apiName === unit.apiName);
+                    return (
+                      <div className="flex flex-col gap-3 bg-white/[0.02] border border-white/[0.06] rounded-xl p-4 animate-fadeIn">
+                        <div className="flex items-center justify-between border-b border-white/[0.04] pb-2">
+                          <div className="flex items-center gap-2">
+                            {champData?.image && (
+                              <img src={champData.image} alt={unit.name} className="w-6 h-6 object-cover rounded" />
+                            )}
+                            <span className="text-xs font-bold font-mono text-zinc-200">
+                              Ô {selectedSlot + 1}: {unit.name}
+                            </span>
                           </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setCompUnits(compUnits.filter((_, idx) => idx !== uIdx));
+                              setSelectedSlot(null);
+                            }}
+                            className="px-2 py-1 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 rounded text-[9px] font-mono font-bold text-rose-400 transition-colors cursor-pointer"
+                          >
+                            Gỡ Tướng 🗑️
+                          </button>
+                        </div>
+
+                        <div className="flex items-center gap-4">
+                          <label className="flex items-center gap-1.5 text-[11px] text-zinc-300 font-mono cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={unit.isCarry}
+                              onChange={(e) => {
+                                const updated = [...compUnits];
+                                updated[uIdx].isCarry = e.target.checked;
+                                setCompUnits(updated);
+                              }}
+                              className="rounded border-zinc-700 bg-zinc-800 text-violet-500 focus:ring-violet-500"
+                            />
+                            👑 Carry chính
+                          </label>
+                          <label className="flex items-center gap-1.5 text-[11px] text-zinc-300 font-mono cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={unit.isFlex}
+                              onChange={(e) => {
+                                const updated = [...compUnits];
+                                updated[uIdx].isFlex = e.target.checked;
+                                setCompUnits(updated);
+                              }}
+                              className="rounded border-zinc-700 bg-zinc-800 text-violet-500 focus:ring-violet-500"
+                            />
+                            🔄 Flex / Tùy biến
+                          </label>
+                        </div>
+
+                        {/* Item selects */}
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-[10px] text-zinc-500 font-mono uppercase font-bold">Trang bị khuyên dùng (Max 3)</label>
+                          <div className="grid grid-cols-3 gap-2">
+                            {[0, 1, 2].map((slotIdx) => (
+                              <select
+                                key={slotIdx}
+                                value={unit.items[slotIdx] || ""}
+                                onChange={(e) => {
+                                  const updated = [...compUnits];
+                                  const items = [...(unit.items || [])];
+                                  if (e.target.value) {
+                                    items[slotIdx] = e.target.value;
+                                  } else {
+                                    items.splice(slotIdx, 1);
+                                  }
+                                  updated[uIdx].items = items.filter(Boolean);
+                                  setCompUnits(updated);
+                                }}
+                                className="bg-white/[0.03] border border-white/[0.08] rounded px-2 py-1.5 text-[10px] font-mono text-zinc-300 focus:outline-none focus:border-violet-500/50 cursor-pointer"
+                              >
+                                <option value="">Trang bị {slotIdx + 1}</option>
+                                {tftData.items.map((item: any) => (
+                                  <option key={item.apiName} value={item.apiName}>{item.name}</option>
+                                ))}
+                              </select>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  } else {
+                    // CHAMP SELECT PANEL
+                    const filteredChamps = tftData.champions.filter((c: any) =>
+                      c.name.toLowerCase().includes(champSearch.toLowerCase())
+                    );
+
+                    return (
+                      <div className="flex flex-col gap-3 bg-white/[0.02] border border-white/[0.06] rounded-xl p-4 animate-fadeIn">
+                        <div className="flex items-center justify-between border-b border-white/[0.04] pb-2">
+                          <span className="text-xs font-bold font-mono text-violet-400">
+                            Đặt tướng vào Ô {selectedSlot + 1}
+                          </span>
+                          <div className="flex items-center gap-1.5 bg-black/20 border border-white/[0.04] rounded px-2 py-1">
+                            <Search className="w-3 h-3 text-zinc-500" />
+                            <input
+                              type="text"
+                              value={champSearch}
+                              onChange={(e) => setChampSearch(e.target.value)}
+                              placeholder="Tìm tướng..."
+                              className="bg-transparent text-[10px] font-mono text-zinc-300 focus:outline-none w-[100px]"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-5 sm:grid-cols-7 gap-2 max-h-[160px] overflow-y-auto p-1 bg-black/20 rounded border border-white/[0.04]">
+                          {filteredChamps.map((c: any) => {
+                            // Check if this champ is already placed somewhere else
+                            const isPlaced = compUnits.some(u => u.apiName === c.apiName);
+                            return (
+                              <button
+                                key={c.apiName}
+                                type="button"
+                                onClick={() => {
+                                  // Add new unit to selectedSlot
+                                  const newUnit = {
+                                    apiName: c.apiName,
+                                    name: c.name,
+                                    isCarry: false,
+                                    isFlex: false,
+                                    items: [],
+                                    position: selectedSlot,
+                                  };
+                                  setCompUnits([...compUnits, newUnit]);
+                                }}
+                                title={c.name}
+                                className={cn(
+                                  "relative flex items-center justify-center p-1 rounded border transition-all hover:scale-105 aspect-square cursor-pointer",
+                                  isPlaced
+                                    ? "border-amber-500/50 bg-amber-500/5 grayscale-[50%]"
+                                    : "border-white/[0.06] bg-white/[0.01] hover:border-violet-500/50 hover:bg-violet-500/5"
+                                )}
+                              >
+                                {c.image ? (
+                                  <img src={c.image} alt={c.name} className="w-full h-full object-cover rounded" />
+                                ) : (
+                                  <span className="text-[8px] line-clamp-1">{c.name}</span>
+                                )}
+                                {isPlaced && (
+                                  <span className="absolute top-0 right-0 bg-amber-500 text-black text-[6px] font-extrabold px-0.5 rounded-bl">
+                                    IN USE
+                                  </span>
+                                )}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  }
+                })()}
 
                 {/* Traits management */}
                 <div className="flex flex-col gap-1 border-t border-white/[0.06] pt-3">

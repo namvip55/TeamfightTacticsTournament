@@ -13,6 +13,7 @@ import {
   X,
   ChevronRight,
   Sparkles,
+  Crown,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -30,6 +31,7 @@ interface SidebarProps {
 const navItems = [
   { href: "/", label: "Trang Chủ", icon: Home },
   { href: "/players", label: "Tuyển Thủ", icon: Users },
+  { href: "/comps", label: "Đội Hình TFT", icon: Crown },
   { href: "/shop", label: "Cửa Hàng", icon: ShoppingBag },
 ];
 
